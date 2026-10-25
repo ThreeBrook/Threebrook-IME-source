@@ -82,13 +82,15 @@ class AboutFragment : PreferenceFragmentCompat() {
                 addPreference(R.string.about_contact, CustomConstant.THREEBROOK_SUPPORT_EMAIL) {
                     openUri("mailto:${CustomConstant.THREEBROOK_SUPPORT_EMAIL}")
                 }
-                addPreference(R.string.privacy_policy) {
-                    findNavController().navigate(R.id.action_aboutFragment_to_privacyPolicyFragment)
-                }
+                addPreference(R.string.privacy_policy) { openLegal(LegalFragment.PAGE_PRIVACY, R.string.privacy_policy) }
+                addPreference(R.string.about_eula) { openLegal(LegalFragment.PAGE_EULA, R.string.about_eula) }
             }
             // 用到的开源软件与数据：BSD 要求随二进制附上版权声明，CC BY-SA 要求署名
             addCategory(R.string.about_open_source) {
                 isIconSpaceReserved = false
+                addPreference(R.string.about_licenses, R.string.about_licenses_summary) {
+                    openLegal(LegalFragment.PAGE_LICENSES, R.string.about_licenses)
+                }
                 addPreference(R.string.about_os_yuyan, R.string.about_os_yuyan_summary) { openUri(CustomConstant.YUYAN_IME_REPO) }
                 addPreference(R.string.about_os_rime, R.string.about_os_rime_summary) { openUri("https://github.com/rime/librime") }
                 addPreference(R.string.about_os_sherpa, R.string.about_os_sherpa_summary) { openUri("https://github.com/k2-fsa/sherpa-onnx") }
@@ -116,6 +118,10 @@ class AboutFragment : PreferenceFragmentCompat() {
         }
 
 
+    }
+
+    private fun openLegal(page: String, title: Int) {
+        findNavController().navigate(R.id.action_aboutFragment_to_legalFragment, LegalFragment.args(page, getString(title)))
     }
 
     private fun openUri(uri: String) {

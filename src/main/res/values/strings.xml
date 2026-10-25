@@ -255,6 +255,9 @@
     <string name="about_publisher_name">珠海三溪科技有限公司（三溪 Threebrook）</string>
     <string name="about_website">官网</string>
     <string name="about_contact">联系我们</string>
+    <string name="about_eula">软件许可协议</string>
+    <string name="about_licenses">开源许可</string>
+    <string name="about_licenses_summary">下列开源软件与数据的许可全文</string>
     <string name="about_open_source">开源软件与数据</string>
     <string name="about_os_yuyan">语燕输入法</string>
     <string name="about_os_yuyan_summary">三溪输入法基于语燕输入法开发 · BSD-3-Clause · Copyright (c) 2026, 王莹</string>

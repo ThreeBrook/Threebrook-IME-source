@@ -89,7 +89,13 @@
         <action
             android:id="@+id/action_aboutFragment_to_privacyPolicyFragment"
             app:destination="@id/privacyPolicyFragment" />
+        <action
+            android:id="@+id/action_aboutFragment_to_legalFragment"
+            app:destination="@id/legalFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/legalFragment"
+        android:name="com.yuyan.imemodule.ui.fragment.LegalFragment" />
     <fragment
         android:id="@+id/privacyPolicyFragment"
         android:name="com.yuyan.imemodule.ui.fragment.PrivacyPolicyFragment"

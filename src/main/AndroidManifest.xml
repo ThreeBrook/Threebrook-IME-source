@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <queries>
         <intent>
             <action android:name="android.intent.action.GET_CONTENT"/>
@@ -35,6 +36,11 @@
             android:configChanges="orientation|screenSize"
             android:exported="false"
             android:label="@string/edit_theme" />
+        <activity
+            android:name=".voice.VoicePermissionActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".libs.cropper.CropImageActivity"
             android:exported="false"

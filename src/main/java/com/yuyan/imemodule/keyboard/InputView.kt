@@ -570,6 +570,8 @@ class InputView(context: Context, private val service: ImeService) : IKeyboardVi
             DataBaseKT.instance.clipboardDao().deleteAllExceptKeep()
             (KeyboardManager.instance.currentContainer as? ClipBoardContainer)?.showClipBoardView(SkbMenuMode.ClipBoard)
         }
+
+        override fun onVoiceResult(text: String) = commitText(text)
     }
 
     fun onSettingsMenuClick(skbMenuMode: SkbMenuMode, extra: Phrase? = null) {

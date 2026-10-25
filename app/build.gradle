@@ -78,6 +78,8 @@ android {
         }
 
         debug {
+            // 调试版额外打包x86_64，模拟器里原生运行（语音引擎在ARM转译下会崩溃；手写引擎只有ARM版，模拟器里不可用）
+            ndk { abiFilters 'arm64-v8a', 'x86_64' }
             applicationIdSuffix ".debug"
             signingConfig signingConfigs.release
         }

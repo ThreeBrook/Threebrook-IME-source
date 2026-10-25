@@ -21,7 +21,10 @@ object ClipboardHelper : OnPrimaryClipChangedListener {
     override fun onPrimaryClipChanged() {
         val isClipboardListening = AppPrefs.getInstance().clipboard.clipboardListening.getValue()
         if(isClipboardListening) {
-           val item = Launcher.instance.context.clipboardManager.primaryClip?.getItemAt(0)
+            val clip = Launcher.instance.context.clipboardManager.primaryClip
+            // 密码框里复制的、被标为敏感的内容不记录
+            if (PrivateInput.active || PrivateInput.isSensitiveClip(clip?.description)) return
+            val item = clip?.getItemAt(0)
             item?.takeIf { it.text?.isNotBlank() == true }?.let {
                     val data = it.text.toString().take(20000)
                     DataBaseKT.instance.clipboardDao().insert(Clipboard(content = data))

@@ -2,6 +2,7 @@ package com.yuyan.inputmethod
 
 import android.content.Context
 import android.util.Log
+import com.yuyan.imemodule.service.PrivateInput
 import com.yuyan.inputmethod.core.CandidateListItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +33,7 @@ object UserLearning {
     private const val HALF_LIFE_MS = HALF_LIFE_DAYS * 24 * 3600 * 1000
     private const val UNDO_WINDOW_MS = 30_000L // 上屏后多久内删除算撤销
     private const val SAVE_DELAY_MS = 2_000L
-    private const val ENGINE_USER_DB = "pinyin.userdb"
+    private val ENGINE_USER_DBS = listOf("pinyin", "english", "stroke") // Rime 各方案的学习库，全部关闭
 
     class Word(val key: String, val text: String, var score: Double, var lastUsed: Long, var count: Int) {
         fun scoreAt(now: Long): Double = score * 0.5.pow((now - lastUsed) / HALF_LIFE_MS)
@@ -72,17 +73,19 @@ object UserLearning {
      * 第一次关闭时把原学习库改名备份；之后出现的学习库只可能是引擎重建的空库，直接删除
      */
     fun disableEngineUserDict(rimeDir: File) {
-        val db = File(rimeDir, ENGINE_USER_DB)
-        val lock = File(db, "LOCK")
-        if (lock.isDirectory) return
-        val backup = File(rimeDir, "$ENGINE_USER_DB.bak")
-        when {
-            db.isFile -> db.delete() // 旧版占位文件
-            db.isDirectory && !backup.exists() -> if (!db.renameTo(backup)) Log.e(TAG, "backup engine user db failed")
-            db.isDirectory -> db.deleteRecursively()
+        for (name in ENGINE_USER_DBS) {
+            val db = File(rimeDir, "$name.userdb")
+            val lock = File(db, "LOCK")
+            if (lock.isDirectory) continue
+            val backup = File(rimeDir, "$name.userdb.bak")
+            when {
+                db.isFile -> db.delete() // 旧版占位文件
+                db.isDirectory && !backup.exists() -> if (!db.renameTo(backup)) Log.e(TAG, "backup $name user db failed")
+                db.isDirectory -> db.deleteRecursively()
+            }
+            File(rimeDir, "$name.userdb.old").takeIf { it.isFile }?.delete() // 引擎修复时挪走的旧版占位文件
+            if (!lock.mkdirs() || !File(lock, "disabled-by-threebrook").createNewFile()) Log.e(TAG, "disable $name user db failed")
         }
-        File(rimeDir, "$ENGINE_USER_DB.old").takeIf { it.isFile }?.delete() // 引擎修复时挪走的旧版占位文件
-        if (!lock.mkdirs() || !File(lock, "disabled-by-threebrook").createNewFile()) Log.e(TAG, "disable engine user db failed")
     }
 
     /**
@@ -99,6 +102,7 @@ object UserLearning {
      */
     @Synchronized
     fun record(key: String, text: String) {
+        if (PrivateInput.active) return // 密码框、无痕输入框里不学习
         if (text.isBlank() || text.length > MAX_TEXT_LENGTH || text.contains('\t') || text.contains('\n')) return
         val now = System.currentTimeMillis()
         val byText = words.getOrPut(key) { HashMap() }

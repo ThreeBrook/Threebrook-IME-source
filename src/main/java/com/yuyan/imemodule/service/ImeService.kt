@@ -97,6 +97,7 @@ class ImeService : InputMethodService() {
 
     override fun onStartInput(editorInfo: EditorInfo?, restarting: Boolean) {
         super.onStartInput(editorInfo, restarting)
+        PrivateInput.update(editorInfo)
         if(editorInfo != null) {
             YuyanEmojiCompat.setEditorInfo(editorInfo)
             InputModeSwitcher.requestInputWithSkb(editorInfo)

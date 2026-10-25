@@ -1,8 +1,10 @@
 package com.yuyan.imemodule.ui.fragment
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
@@ -70,26 +72,33 @@ class AboutFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         preferenceScreen = preferenceManager.createPreferenceScreen(requireContext()).apply {
-            addPreference(R.string.privacy_policy) {
-                findNavController().navigate(R.id.action_aboutFragment_to_privacyPolicyFragment)
+            addCategory(R.string.ime_yuyan_name) {
+                isIconSpaceReserved = false
+                addPreference(R.string.about_product, getString(R.string.about_product_summary, BuildConfig.versionName))
+                addPreference(R.string.about_publisher, R.string.about_publisher_name)
+                addPreference(R.string.about_website, CustomConstant.THREEBROOK_WEBSITE.removePrefix("https://")) {
+                    openUri(CustomConstant.THREEBROOK_WEBSITE)
+                }
+                addPreference(R.string.about_contact, CustomConstant.THREEBROOK_SUPPORT_EMAIL) {
+                    openUri("mailto:${CustomConstant.THREEBROOK_SUPPORT_EMAIL}")
+                }
+                addPreference(R.string.privacy_policy) {
+                    findNavController().navigate(R.id.action_aboutFragment_to_privacyPolicyFragment)
+                }
             }
-            addPreference(R.string.source_code, R.string.github_repo) {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(CustomConstant.YUYAN_IME_REPO)))
-            }
-            addPreference(R.string.license, "GPL-3.0 license ") {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(CustomConstant.LICENSE_URL)))
+            // 用到的开源软件与数据：BSD 要求随二进制附上版权声明，CC BY-SA 要求署名
+            addCategory(R.string.about_open_source) {
+                isIconSpaceReserved = false
+                addPreference(R.string.about_os_yuyan, R.string.about_os_yuyan_summary) { openUri(CustomConstant.YUYAN_IME_REPO) }
+                addPreference(R.string.about_os_rime, R.string.about_os_rime_summary) { openUri("https://github.com/rime/librime") }
+                addPreference(R.string.about_os_sherpa, R.string.about_os_sherpa_summary) { openUri("https://github.com/k2-fsa/sherpa-onnx") }
+                addPreference(R.string.about_os_sensevoice, R.string.about_os_sensevoice_summary) { openUri("https://github.com/FunAudioLLM/SenseVoice") }
+                addPreference(R.string.about_os_words, R.string.about_os_words_summary) { openUri("https://github.com/hermitdave/FrequencyWords") }
             }
             addCategory(R.string.app_version) {
                 isIconSpaceReserved = false
-                addPreference(R.string.version, BuildConfig.versionName){
-                    val uri = Uri.parse("${CustomConstant.YUYAN_IME_REPO}/releases/latest")
-                    startActivity(Intent(Intent.ACTION_VIEW, uri))
-                }
-                addPreference(R.string.build_git_hash, BuildConfig.AppCommitHead) {
-                    val commit = BuildConfig.AppCommitHead.substringBefore('-')
-                    val uri = Uri.parse("${CustomConstant.YUYAN_IME_REPO}/commit/${commit}")
-                    startActivity(Intent(Intent.ACTION_VIEW, uri))
-                }
+                addPreference(R.string.version, BuildConfig.versionName)
+                addPreference(R.string.build_git_hash, BuildConfig.AppCommitHead)
                 addPreference(R.string.build_time, BuildConfig.AppBuildTime)
 
             }
@@ -99,13 +108,22 @@ class AboutFragment : PreferenceFragmentCompat() {
                 addPreference(R.string.export_crash_log) {
                     lifecycleScope.launch {
                         exportTimestamp = System.currentTimeMillis()
-                        exportLauncher.launch("yuyanIme_crash_log${TimeUtils.iso8601UTCDateTime(exportTimestamp)}.zip")
+                        exportLauncher.launch("threebrook_input_crash_log${TimeUtils.iso8601UTCDateTime(exportTimestamp)}.zip")
                     }
                 }
+                addPreference(getString(R.string.about_copyright))
             }
         }
 
 
+    }
+
+    private fun openUri(uri: String) {
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(uri)))
+        } catch (_: ActivityNotFoundException) {
+            Toast.makeText(requireContext(), uri, Toast.LENGTH_LONG).show() // 没有浏览器或邮件应用时至少把地址显示出来
+        }
     }
 }
 

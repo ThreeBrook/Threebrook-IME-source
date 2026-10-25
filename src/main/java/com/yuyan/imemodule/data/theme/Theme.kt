@@ -39,6 +39,8 @@ sealed class Theme : Parcelable {
 
     abstract val popupBackgroundColor: Int    // 长按弹窗背景色
 
+    open val keyStrokeColor: Int get() = 0    // 按键描边色，0 表示不描边
+
     open fun backgroundDrawable(keyBorder: Boolean = false): Drawable {
         return if(keyboardResources != 0){
             ContextCompat.getDrawable(Launcher.instance.context, keyboardResources)!!
@@ -107,6 +109,7 @@ sealed class Theme : Parcelable {
         override val popupBackgroundColor: Int,
         override val functionKeyBackgroundColor: Int,
         override val functionKeyPressHighlightColor: Int,
+        override val keyStrokeColor: Int = 0,
     ) : Theme() {
 
         // an alias to use 0xAARRGGBB color literal in code
@@ -125,6 +128,7 @@ sealed class Theme : Parcelable {
             popupBackgroundColor: Number,
             functionKeyBackgroundColor: Number,
             functionKeyPressHighlightColor: Number,
+            keyStrokeColor: Number = 0,
         ) : this(
             name,
             isDark,
@@ -139,6 +143,7 @@ sealed class Theme : Parcelable {
             popupBackgroundColor.toInt(),
             functionKeyBackgroundColor.toInt(),
             functionKeyPressHighlightColor.toInt(),
+            keyStrokeColor.toInt(),
         )
 
         fun deriveCustomNoBackground(name: String) = Custom(

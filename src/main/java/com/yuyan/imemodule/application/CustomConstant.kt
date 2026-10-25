@@ -17,6 +17,8 @@ object CustomConstant {
     const val SCHEMA_ZH_STROKE = "stroke" // 五笔画
     const val CURRENT_RIME_DICT_DATA_VERSIOM = 20260325
     const val YUYAN_IME_REPO = "https://github.com/gurecn/YuyanIme"
+    const val THREEBROOK_WEBSITE = "https://www.threebrook.com"
+    const val THREEBROOK_SUPPORT_EMAIL = "support@threebrook.com"
     const val LICENSE_URL = "https://www.gnu.org/licenses/gpl-3.0.html"
     const val FEEDBACK_TXC_REPO = "https://github.com/gurecn/YuyanIme/issues"
 

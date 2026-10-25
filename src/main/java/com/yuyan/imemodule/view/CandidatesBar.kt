@@ -1,6 +1,7 @@
 package com.yuyan.imemodule.view
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.ContextThemeWrapper
@@ -69,6 +70,7 @@ class CandidatesBar(context: Context?, attrs: AttributeSet?) : RelativeLayout(co
     private lateinit var mVoiceStatus: TextView // 语音输入状态提示
     private var voiceCanceling = false // 手指上滑到取消区域
     private var hideVoiceStatusJob: Job? = null
+    private var menuSettingTint = 0 // 左上角按钮返回箭头的着色，应用图标保持原色
     private var activeCandNo:Int = 0
 
     fun initialize(cvListener: CandidateViewListener) {
@@ -310,6 +312,14 @@ class CandidatesBar(context: Context?, attrs: AttributeSet?) : RelativeLayout(co
         }
     }
 
+    /**
+     * 左上角按钮：0 显示应用图标（彩色，不着色），1 显示返回箭头（跟随主题文字色）
+     */
+    private fun setMenuSettingLevel(level: Int) {
+        mIvMenuSetting.drawable.setLevel(level)
+        mIvMenuSetting.imageTintList = if (level == 1 && menuSettingTint != 0) ColorStateList.valueOf(menuSettingTint) else null
+    }
+
     private fun showVoiceStatus(textRes: Int, autoHide: Boolean = false) {
         hideVoiceStatusJob?.cancel()
         mVoiceStatus.setText(textRes)
@@ -371,7 +381,7 @@ class CandidatesBar(context: Context?, attrs: AttributeSet?) : RelativeLayout(co
     fun showCandidates() {
         mComposingView.text = DictDecoder.composingStrForDisplay
         val container = KeyboardManager.instance.currentContainer
-        mIvMenuSetting.drawable.setLevel( if(container is InputBaseContainer) 0 else 1)
+        setMenuSettingLevel(if(container is InputBaseContainer) 0 else 1)
         if (container is ClipBoardContainer) {
             showViewVisibility(mCandidatesMenuContainer)
             mCandidatesMenuAdapter.items = if(container.getMenuMode() == SkbMenuMode.ClipBoard) {
@@ -485,7 +495,8 @@ class CandidatesBar(context: Context?, attrs: AttributeSet?) : RelativeLayout(co
         mComposingView.setTextColor(textColor)
         mRightArrowBtn.drawable.setTint(textColor)
         mMenuRightArrowBtn.drawable.setTint(textColor)
-        mIvMenuSetting.drawable.setTint(textColor)
+        menuSettingTint = textColor
+        setMenuSettingLevel(mIvMenuSetting.drawable.level)
         mIvVoice.drawable.setTint(textColor)
         mVoiceStatus.setTextColor(textColor)
         mCandidatesAdapter.notifyChanged()

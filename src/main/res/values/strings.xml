@@ -248,6 +248,26 @@
     <string name="voice_permission_granted">麦克风权限已开启，回到输入框按住麦克风说话</string>
     <string name="voice_permission_denied">未授予麦克风权限，无法使用语音输入</string>
 
+    <!-- 关于 -->
+    <string name="about_product">三溪输入法 · Threebrook Input</string>
+    <string name="about_product_summary">版本 %s · 在本机完成输入和语音识别，不上传</string>
+    <string name="about_publisher">出品方</string>
+    <string name="about_publisher_name">珠海三溪科技有限公司（三溪 Threebrook）</string>
+    <string name="about_website">官网</string>
+    <string name="about_contact">联系我们</string>
+    <string name="about_open_source">开源软件与数据</string>
+    <string name="about_os_yuyan">语燕输入法</string>
+    <string name="about_os_yuyan_summary">三溪输入法基于语燕输入法开发 · BSD-3-Clause · Copyright (c) 2026, 王莹</string>
+    <string name="about_os_rime">Rime 输入法引擎</string>
+    <string name="about_os_rime_summary">BSD-3-Clause · Copyright RIME Developers</string>
+    <string name="about_os_sherpa">sherpa-onnx</string>
+    <string name="about_os_sherpa_summary">离线语音识别引擎 · Apache-2.0</string>
+    <string name="about_os_sensevoice">SenseVoice 语音模型</string>
+    <string name="about_os_sensevoice_summary">语音识别模型（用户自行导入）· FunASR 模型许可</string>
+    <string name="about_os_words">FrequencyWords 英文词频表</string>
+    <string name="about_os_words_summary">英文纠错词表 · Hermit Dave · 来自 OpenSubtitles 2018 · CC BY-SA 4.0</string>
+    <string name="about_copyright">© 2026 三溪 Threebrook</string>
+
     <!-- 我的词库 -->
     <string name="learned_words">我的词库</string>
     <string name="learned_words_summary">共学到 %d 个词，点击可删除</string>

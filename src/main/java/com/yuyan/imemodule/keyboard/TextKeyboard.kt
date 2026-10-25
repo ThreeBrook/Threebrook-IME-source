@@ -23,6 +23,7 @@ import com.yuyan.imemodule.service.DictDecoder
 import com.yuyan.imemodule.singleton.EnvironmentSingleton.Companion.instance
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.withSave
 import com.yuyan.imemodule.prefs.behavior.SkbStyleMode
@@ -182,6 +183,10 @@ open class TextKeyboard(context: Context?) : BaseKeyboardView(context){
                 else  -> mActiveTheme.keyBackgroundColor
             }
             bg.setColor(background)
+            // 主题带描边色时画 1dp 细描边（三溪外观：描边细、深色靠描边分层）；实心的回车键不描边
+            if (mActiveTheme.keyStrokeColor != 0 && softKey.code != KeyEvent.KEYCODE_ENTER) {
+                bg.setStroke(resources.displayMetrics.density.roundToInt().coerceAtLeast(1), mActiveTheme.keyStrokeColor)
+            }
             bg.draw(canvas)
         } else if(softKey.code == KeyEvent.KEYCODE_ENTER) {
                bg.setColor(mActiveTheme.accentKeyBackgroundColor)
@@ -205,7 +210,9 @@ open class TextKeyboard(context: Context?) : BaseKeyboardView(context){
             else if(skbStyleMode == SkbStyleMode.Google && softKey.code == InputModeSwitcher.USER_KEYCODE_CURSOR_DIRECTION && !DictDecoder.isCandidatesEmpty) null
             else softKey.keyIcon
         val weightHeigth = softKey.height() / 4f
-        val textColor = mActiveTheme.keyTextColor
+        // 回车键画在强调色上，用强调色上的字色；按下时底色换成按下色，仍用普通字色
+        val onAccent = softKey.code == KeyEvent.KEYCODE_ENTER && !softKey.pressed
+        val textColor = if (onAccent) mActiveTheme.accentKeyTextColor else mActiveTheme.keyTextColor
         if(softKey.code == KeyEvent.KEYCODE_SHIFT_LEFT && InputModeSwitcher.isChinese && !InputDispatcher.isFinish){
             keyLabel = "分词"
             keyIcon = null
@@ -234,7 +241,7 @@ open class TextKeyboard(context: Context?) : BaseKeyboardView(context){
             val marginRight = softKey.width() - intrinsicWidth - marginLeft
             val marginTop = (softKey.height() - intrinsicHeight) / 2
             val marginBottom = softKey.height() - intrinsicHeight - marginTop
-            keyIcon.setTint(mActiveTheme.keyTextColor)
+            keyIcon.setTint(textColor)
             keyIcon.setBounds(softKey.mLeft + marginLeft, softKey.mTop + marginTop, softKey.mRight - marginRight, softKey.mBottom - marginBottom)
             keyIcon.draw(canvas)
         } else if (!TextUtils.isEmpty(keyLabel)) { //Label位于中间

@@ -5,6 +5,45 @@ import com.yuyan.imemodule.R
 
 object ThemePreset {
 
+    /**
+     * 三溪外观规范（docs/01-ui/三溪外观规范.md，threebrook-design-tokens.json）：
+     * 浅色米白纸面 + 墨绿文字 + 溪青强调色；深色是带绿的深墨底、不用纯黑，靠描边分层。
+     * 每个颜色后面注明对应的规范变量，改色请改规范变量对应的值。
+     */
+    val ThreebrookLight = Theme.Builtin(
+        name = "ThreebrookLight",
+        isDark = false,
+        keyboardResources = 0x0,
+        keyboardColor = 0xffEAF3EC, // sidebar
+        barColor = 0xffEAF3EC, // sidebar
+        keyBackgroundColor = 0xffFFFFFF, // card
+        keyTextColor = 0xff1D3331, // text
+        accentKeyBackgroundColor = 0xff1C8780, // accent
+        accentKeyTextColor = 0xffFFFFFF, // onAccent
+        keyPressHighlightColor = 0xffD4EEE9, // navActive
+        popupBackgroundColor = 0xffE0F2EE, // accentSoft
+        functionKeyBackgroundColor = 0xffD6E4DB, // border
+        functionKeyPressHighlightColor = 0xffC5D7CC, // borderStrong
+        keyStrokeColor = 0xffD6E4DB, // border
+    )
+
+    val ThreebrookDark = Theme.Builtin(
+        name = "ThreebrookDark",
+        isDark = true,
+        keyboardResources = 0x0,
+        keyboardColor = 0xff0F1A19, // bg
+        barColor = 0xff0F1A19, // bg
+        keyBackgroundColor = 0xff172826, // card
+        keyTextColor = 0xffE4F0EC, // text
+        accentKeyBackgroundColor = 0xff4CC0B6, // accent
+        accentKeyTextColor = 0xff08201E, // onAccent：深色模式主按钮上是深字
+        keyPressHighlightColor = 0xff173A36, // accentSoft
+        popupBackgroundColor = 0xff1E3834, // navActive
+        functionKeyBackgroundColor = 0xff1F3330, // track
+        functionKeyPressHighlightColor = 0xff31504B, // borderStrong
+        keyStrokeColor = 0xff27403C, // border
+    )
+
     val MaterialLight = Theme.Builtin(
         name = "MaterialLight",
         isDark = false,

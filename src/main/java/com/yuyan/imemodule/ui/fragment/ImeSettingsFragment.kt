@@ -99,7 +99,11 @@ class ImeSettingsFragment : PreferenceFragmentCompat() {
                 )
                 addPreference(R.string.feedback,"",
                     R.drawable.ic_menu_edit,) {
-                    startActivity(Intent(Intent.ACTION_VIEW, CustomConstant.FEEDBACK_TXC_REPO.toUri()))
+                    try {
+                        startActivity(Intent(Intent.ACTION_SENDTO, "mailto:${CustomConstant.THREEBROOK_SUPPORT_EMAIL}".toUri()))
+                    } catch (_: android.content.ActivityNotFoundException) { // 没装邮件应用时显示邮箱地址
+                        android.widget.Toast.makeText(requireContext(), CustomConstant.THREEBROOK_SUPPORT_EMAIL, android.widget.Toast.LENGTH_LONG).show()
+                    }
                 }
                 addDestinationPreference(
                     R.string.about,

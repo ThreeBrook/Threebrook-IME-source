@@ -15,6 +15,8 @@ object ThemeManager {
     }
 
     val BuiltinThemes = listOf(
+        ThemePreset.ThreebrookLight,
+        ThemePreset.ThreebrookDark,
         ThemePreset.MaterialLight,
         ThemePreset.MaterialDark,
         ThemePreset.PixelLight,
@@ -31,7 +33,7 @@ object ThemeManager {
         ThemePreset.CustomPurple,
     )
 
-    val DefaultTheme = ThemePreset.MaterialLight
+    val DefaultTheme = ThemePreset.ThreebrookLight
 
     private val customThemes: MutableList<Theme.Custom> = ThemeFilesManager.listThemes()
 

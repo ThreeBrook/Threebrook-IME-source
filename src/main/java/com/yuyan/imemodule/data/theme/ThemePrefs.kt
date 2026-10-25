@@ -66,7 +66,7 @@ class ThemePrefs(sharedPreferences: SharedPreferences) :
     val lightModeTheme = themePreference(
         R.string.light_mode_theme,
         "light_mode_theme",
-        ThemePreset.MaterialLight,
+        ThemePreset.ThreebrookLight,
         enableUiOn = {
             followSystemDayNightTheme.getValue()
         })
@@ -74,7 +74,7 @@ class ThemePrefs(sharedPreferences: SharedPreferences) :
     val darkModeTheme = themePreference(
         R.string.dark_mode_theme,
         "dark_mode_theme",
-        ThemePreset.MaterialDark,
+        ThemePreset.ThreebrookDark,
         enableUiOn = {
             followSystemDayNightTheme.getValue()
         })
@@ -151,7 +151,8 @@ class ThemePrefs(sharedPreferences: SharedPreferences) :
     val keyRadius = int(
         R.string.key_radius,
         "key_radius",
-        20,
+        26, // 按键是按钮，按三溪外观的主按钮圆角 10dp，常见 420dpi 屏上约 26 像素
+
         0,
         60,
         "dp"

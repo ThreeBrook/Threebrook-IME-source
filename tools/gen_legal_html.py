@@ -1,13 +1,15 @@
 """Turn docs/legal/*.md into the in-app pages under src/main/assets/legal/.
-Usage: python tools/gen_legal_html.py <docs/legal dir> src/main/assets/legal
+Usage (from the yuyansdk directory): python tools/gen_legal_html.py [docs/legal] [src/main/assets/legal]
 Only the Markdown these documents use: headings, paragraphs, lists, tables, code blocks, links, bold.
-Colours follow docs/01-ui/三溪外观规范.md (light and dark)."""
+Colours follow the Threebrook appearance spec 三溪外观规范.md (light and dark)."""
 import html
 import os
 import re
 import sys
 
-SRC, OUT = sys.argv[1], sys.argv[2]
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SRC = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, "docs", "legal")
+OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(ROOT, "src", "main", "assets", "legal")
 PAGES = {"三溪输入法-隐私政策.md": "privacy.html", "三溪输入法-软件许可协议.md": "eula.html", "开源许可.md": "licenses.html"}
 
 CSS = """

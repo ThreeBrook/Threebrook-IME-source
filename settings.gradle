@@ -1,1 +1,2 @@
-include ':yuyansdk', ':app'
+include ':yuyansdk', ':app', ':sherpa-onnx'
+project(':sherpa-onnx').projectDir = file('yuyansdk/libs/sherpa-onnx')

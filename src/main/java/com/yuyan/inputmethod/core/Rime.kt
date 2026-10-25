@@ -3,6 +3,7 @@ package com.yuyan.inputmethod.core
 import android.content.Context
 import com.yuyan.imemodule.application.CustomConstant
 import com.yuyan.imemodule.application.Launcher
+import com.yuyan.inputmethod.EnglishCorrector
 import com.yuyan.inputmethod.UserLearning
 import java.io.File
 import kotlin.system.measureTimeMillis
@@ -30,6 +31,7 @@ class Rime(fullCheck: Boolean) {
 
         fun startup(context: Context, fullCheck: Boolean) {
             UserLearning.init(context)
+            EnglishCorrector.preload(context)
             UserLearning.disableEngineUserDict(File(CustomConstant.RIME_DICT_PATH)) // 学习改由UserLearning负责
             startupRime(context, CustomConstant.RIME_DICT_PATH, CustomConstant.RIME_DICT_PATH, fullCheck)
             updateStatus()

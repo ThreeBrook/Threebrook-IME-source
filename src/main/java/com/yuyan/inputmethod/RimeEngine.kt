@@ -131,7 +131,10 @@ object RimeEngine {
      * 同时记录每个展示位置对应的Rime候选下标，供选词时换算
      */
     private fun arrangeCandidates(phrase: List<String>, dynamicPhrase: List<String>, candidates: List<CandidateListItem>, key: String?): List<CandidateListItem> {
-        val (emojis, words) = candidates.withIndex().partition { StringUtils.isEmoji(it.value.text) }
+        // 和自定义候选重复的Rime候选去掉（如英文纠错"don't"），下标映射随元素一起保留，不影响选词
+        val custom = (phrase + dynamicPhrase).map { it.lowercase() }.toSet()
+        val (emojis, words) = candidates.withIndex().filter { it.value.text.lowercase() !in custom }
+            .partition { StringUtils.isEmoji(it.value.text) }
         val rimeOrdered = words.toMutableList().apply { addAll(EMOJI_MIN_POSITION.coerceAtMost(size), emojis) }
             .map { it.value to it.index }.toMutableList()
         learnedInjected = if (key != null) UserLearning.rank(key, rimeOrdered, "📋") else emptySet()
@@ -206,6 +209,13 @@ object RimeEngine {
                     phrase.add(0, compositionText)
                 }
                 val dynamicPhrase = CustomEngine.processDynamicPhrase(code)
+                if (InputModeSwitcher.isEnglish && StringUtils.isLetter(compositionText)) {
+                    // 拼写纠错排在原样输入之后，空格仍上屏原样输入；补全候选里的重复项在组装时去掉
+                    val fixes = EnglishCorrector.suggest(compositionText)
+                    val typedIndex = phrase.indexOfFirst { it.equals(compositionText, ignoreCase = true) }
+                    // 原样输入就是首个补全候选时，纠错跟在它后面（动态候选的位置）
+                    if (typedIndex >= 0) phrase.addAll(typedIndex + 1, fixes) else dynamicPhrase.addAll(0, fixes)
+                }
                 customPhraseSize = phrase.size + dynamicPhrase.size
                 arrangeCandidates(phrase, dynamicPhrase, candidates, key)
             }

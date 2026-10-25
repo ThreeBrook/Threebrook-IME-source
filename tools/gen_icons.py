@@ -1,7 +1,7 @@
 """Generate Android vector drawables for the Threebrook Input icon, following the
 Threebrook product icon family (G:/Projects/Threebrook Seek/tools/branding/brand/design/Icons.dc.html):
 rounded square (radius = 22% of side), top-light/bottom-dark product colour, white main glyph,
-the 'moon over three brooks' signature in the bottom-left. Product colour: 暮紫 #7460C4.
+the 'moon over three brooks' signature in the bottom-left. Product colour: 晴蓝 #2F7FC1.
 
 VectorDrawable has no SVG mask, so wave cut-outs are built as even-odd holes:
 clip to the moon circle, then fill (bounding square + wave bands) with evenOdd."""
@@ -10,7 +10,7 @@ import os
 import sys
 
 OUT = sys.argv[1]
-TOP, BASE, BOTTOM = "#8573D6", "#7460C4", "#6550B0"  # 暮紫 gradient, like 溪绿 #27B07A -> #1A8E5E around #1F9E6B
+TOP, BASE, BOTTOM = "#3C8FD6", "#2F7FC1", "#2A6FB0"  # 晴蓝 gradient, as gBlue in the brand Icons.dc.html
 SIGN_ALPHA = "0.72"
 
 

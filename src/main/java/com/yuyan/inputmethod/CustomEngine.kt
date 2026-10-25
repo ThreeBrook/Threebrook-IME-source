@@ -57,6 +57,17 @@ object CustomEngine {
         val chinesePredictionDate = getInstance().input.chinesePredictionDate.getValue()
         if(chinesePredictionDate) {
             phrases.addAll(DataBaseKT.instance.phraseDao().query(text).map { it.content })
+        }
+        return phrases
+    }
+
+    /**
+     * 日期、时间这类动态候选。单独返回，由调用方排在首选之后，避免空格直接上屏时间
+     */
+    fun processDynamicPhrase(text: String):MutableList<String> {
+        val phrases = mutableListOf<String>()
+        val chinesePredictionDate = getInstance().input.chinesePredictionDate.getValue()
+        if(chinesePredictionDate) {
             val suffixesDate = setOf("rq", "riqi", "PGPG", "PP")
             if (suffixesDate.any { it == text }) {
                 phrases.addAll(TimeUtils.getData())

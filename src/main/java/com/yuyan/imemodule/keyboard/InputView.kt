@@ -507,6 +507,7 @@ class InputView(context: Context, private val service: ImeService) : IKeyboardVi
         val candidate = DictDecoder.getCandidate(candId)
         if (candidate?.comment == "📋") {
             commitDecInfoText(candidate.text)
+            if (!InputModeSwitcher.isEnglish) resetToIdleState() // 自定义候选不经过Rime，上屏后清掉Rime里残留的拼音
         } else {
             val choice = DictDecoder.chooseDecodingCandidate(candId)
             if (DictDecoder.isCandidatesEmpty || DictDecoder.isAssociate) {

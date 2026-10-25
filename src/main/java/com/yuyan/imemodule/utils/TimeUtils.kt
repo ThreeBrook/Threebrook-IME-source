@@ -47,7 +47,7 @@ object TimeUtils {
         val data = mutableListOf<String>()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val currentTime =  LocalTime.now()
-            data.add("${currentTime.hour}:${currentTime.minute}")
+            data.add("${currentTime.hour}:${currentTime.minute.toString().padStart(2, '0')}")
         }
         return data
     }

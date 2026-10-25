@@ -31,6 +31,24 @@ object StringUtils {
         return pattern.matcher(str).matches()
     }
 
+    /**
+     * 判断字符串是不是表情（如Rime表情滤镜产生的候选）
+     */
+    @JvmStatic
+    fun isEmoji(str: String?): Boolean {
+        if (str.isNullOrEmpty()) return false
+        if (str.contains('⃣')) return true // 数字键帽表情，如 3️⃣
+        var hasSymbol = false
+        for (cp in str.codePoints().toArray()) {
+            when {
+                cp == 0x200D || cp in 0xFE00..0xFE0F || cp in 0x1F3FB..0x1F3FF || cp in 0xE0020..0xE007F -> {} // 连接符、变体选择符、肤色、标签
+                cp >= 0x2190 && Character.getType(cp) == Character.OTHER_SYMBOL.toInt() -> hasSymbol = true
+                else -> return false
+            }
+        }
+        return hasSymbol
+    }
+
     fun isChineseEnd(input: String): Boolean {
         val chineseEndPattern = "[\\u4e00-\\u9fff]\$".toRegex()
         return chineseEndPattern.find(input) != null

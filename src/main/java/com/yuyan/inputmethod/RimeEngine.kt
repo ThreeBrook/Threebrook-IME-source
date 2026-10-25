@@ -23,6 +23,9 @@ object RimeEngine {
     var showComposition: String = "" // 候选词上方展示的拼音
     var preCommitText: String = "" // 待提交的文字
     private var customPhraseSize: Int = 0 // 自定义引擎候选词长度
+    private var rimeIndexMap: IntArray = IntArray(0) // 展示位置 -> Rime候选下标，自定义候选为-1
+    private const val DYNAMIC_PHRASE_POSITION = 1 // 日期时间排在首选之后
+    private const val EMOJI_MIN_POSITION = 5 // 表情至少排在前5个文字候选之后
     const val MASK_CASE_LOWER = 0
     private var charCase = 0x0000
     fun init() {
@@ -61,7 +64,8 @@ object RimeEngine {
     }
 
     fun selectCandidate(index: Int): String? {
-        val indexReal = index - customPhraseSize
+        // 翻页追加的候选不在映射表内，它们前面的自定义候选数量固定为customPhraseSize
+        val indexReal = rimeIndexMap.getOrNull(index)?.takeIf { it >= 0 } ?: (index - customPhraseSize)
         Rime.selectCandidate(indexReal)
         keyRecordStack.pushCandidateSelectAction()
         return updateCandidatesOrCommitText()
@@ -120,6 +124,22 @@ object RimeEngine {
         preCommitText = showCandidates.getOrNull(indexReal)?.text?:""
     }
 
+    /**
+     * 组装候选：常用语在最前，日期时间排在首选之后，表情排在前几个文字候选之后。
+     * 同时记录每个展示位置对应的Rime候选下标，供选词时换算
+     */
+    private fun arrangeCandidates(phrase: List<String>, dynamicPhrase: List<String>, candidates: List<CandidateListItem>): List<CandidateListItem> {
+        val (emojis, words) = candidates.withIndex().partition { StringUtils.isEmoji(it.value.text) }
+        val rimeOrdered = words.toMutableList().apply { addAll(EMOJI_MIN_POSITION.coerceAtMost(size), emojis) }
+        val result = mutableListOf<Pair<CandidateListItem, Int>>()
+        phrase.forEach { result.add(CandidateListItem("📋", it) to -1) }
+        rimeOrdered.forEach { result.add(it.value to it.index) }
+        val dynamicPosition = (phrase.size + DYNAMIC_PHRASE_POSITION).coerceAtMost(result.size)
+        result.addAll(dynamicPosition, dynamicPhrase.map { CandidateListItem("📋", it) to -1 })
+        rimeIndexMap = result.map { it.second }.toIntArray()
+        return result.map { it.first }
+    }
+
     fun reset() {
         showCandidates = emptyList()
         pinyins = emptyArray()
@@ -150,16 +170,19 @@ object RimeEngine {
         }
         val candidates = Rime.getRimeContext()?.candidates?.asList() ?: emptyList()
         customPhraseSize = 0
+        rimeIndexMap = IntArray(0)
         val compositionText = Rime.compositionText
         showCandidates = when {
             compositionText.isNotBlank() -> {
-                val phrase = CustomEngine.processPhrase(compositionText.replace("\'", ""))
+                val code = compositionText.replace("\'", "")
+                val phrase = CustomEngine.processPhrase(code)
                 if(InputModeSwitcher.isEnglish && StringUtils.isLetter(compositionText) &&
-                    !compositionText.equals(candidates.first().text, ignoreCase = true) ){
+                    !compositionText.equals(candidates.firstOrNull()?.text, ignoreCase = true) ){
                     phrase.add(0, compositionText)
                 }
-                customPhraseSize = phrase.size
-                phrase.map { content -> CandidateListItem("📋", content) }.toMutableList().plus(candidates)
+                val dynamicPhrase = CustomEngine.processDynamicPhrase(code)
+                customPhraseSize = phrase.size + dynamicPhrase.size
+                arrangeCandidates(phrase, dynamicPhrase, candidates)
             }
             else -> candidates
         }

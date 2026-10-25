@@ -72,6 +72,7 @@ class ImeService : InputMethodService() {
         super.onCreate()
         addOnChangedListener(onThemeChangeListener)
         getInstance().keyboardSetting.showVirtualKeyboardOnPhysicalKeyboard.registerOnChangeListener(showVirtualKeyboardOnPhysicalKeyboardListener)
+        showVirtualKeyboardOnPhysicalKeyboard = getInstance().keyboardSetting.showVirtualKeyboardOnPhysicalKeyboard.getValue() // 启动时读取已保存的设置
         handleHardwareKeyboard()
         DictDecoder.candidatesLiveData.observeForever(candidatesObserver)
     }

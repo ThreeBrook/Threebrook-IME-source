@@ -51,6 +51,11 @@ class ImeSettingsFragment : PreferenceFragmentCompat() {
                     R.id.action_settingsFragment_to_handwritingSettingsFragment
                 )
                 addDestinationPreference(
+                    R.string.ime_settings_voice,
+                    R.drawable.ic_menu_voice,
+                    R.id.action_settingsFragment_to_voiceSettingsFragment
+                )
+                addDestinationPreference(
                     R.string.learned_words,
                     R.drawable.ic_menu_edit,
                     R.id.action_settingsFragment_to_learnedWordsFragment

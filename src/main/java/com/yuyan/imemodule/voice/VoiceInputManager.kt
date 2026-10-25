@@ -31,8 +31,8 @@ object VoiceInputManager {
     private const val TAG = "VoiceInput"
     private const val SAMPLE_RATE = 16000
     private const val MODEL_DIR = "sensevoice"
-    private const val MODEL_FILE = "model.int8.onnx"
-    private const val TOKENS_FILE = "tokens.txt"
+    const val MODEL_FILE = "model.int8.onnx"
+    const val TOKENS_FILE = "tokens.txt"
     private const val MAX_RECORD_SECONDS = 60 // 单次最长录音
     private const val MIN_RECORD_SAMPLES = SAMPLE_RATE / 5 // 短于0.2秒视为误触
     private const val SILENCE_RMS = 0.01f // 最响的一帧也低于此音量视为没说话，模型对静音会凭空识别出字
@@ -90,6 +90,14 @@ object VoiceInputManager {
                 Log.i(TAG, "model loaded in ${SystemClock.elapsedRealtime() - start}ms")
             }
         }
+    }
+
+    /**
+     * 释放已加载的模型（导入或删除模型文件前调用），下次使用时重新加载
+     */
+    suspend fun release() = recognizerLock.withLock {
+        recognizer?.release()
+        recognizer = null
     }
 
     @SuppressLint("MissingPermission") // 调用方已检查权限

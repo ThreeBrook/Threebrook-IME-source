@@ -1,0 +1,5 @@
+// 把 sherpa-onnx 的 aar 包成一个 Gradle 模块。
+// 库模块不能直接依赖本地 .aar 文件（打包库或做正式版 lint 时会报 hasLocalAarDeps），
+// 通过项目依赖引用就可以。
+configurations.maybeCreate("default")
+artifacts.add("default", file("sherpa-onnx-1.13.8.aar"))

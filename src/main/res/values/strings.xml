@@ -234,4 +234,15 @@
     <string name="voice_record_failed">无法使用麦克风</string>
     <string name="voice_permission_granted">麦克风权限已开启，回到输入框按住麦克风说话</string>
     <string name="voice_permission_denied">未授予麦克风权限，无法使用语音输入</string>
+
+    <!-- 我的词库 -->
+    <string name="learned_words">我的词库</string>
+    <string name="learned_words_summary">共学到 %d 个词，点击可删除</string>
+    <string name="learned_words_clear">全部清空</string>
+    <string name="learned_words_clear_confirm">清空所有学到的词？清空后候选恢复默认排序。</string>
+    <string name="learned_words_delete_confirm">删除"%s"？</string>
+    <string name="learned_words_detail">%1$s · 用过 %2$d 次 · 最近 %3$s · %4$s</string>
+    <string name="learned_words_level_top">可排第一</string>
+    <string name="learned_words_level_second">最多排第二</string>
+    <string name="learned_words_level_forgotten">已淡忘</string>
 </resources>

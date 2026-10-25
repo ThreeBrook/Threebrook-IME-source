@@ -39,6 +39,11 @@ object InputDispatcher {
         else if(!isFinish)RimeEngine.selectCandidate(index)
     }
 
+    // 点选自定义候选上屏（时间、常用语、学习插入的词）
+    fun onCustomCandidateCommitted(text: String) {
+        RimeEngine.onCustomCandidateCommitted(text)
+    }
+
     // 删除操作
     fun deleteAction() {
         DictDecoder.deleteAction()

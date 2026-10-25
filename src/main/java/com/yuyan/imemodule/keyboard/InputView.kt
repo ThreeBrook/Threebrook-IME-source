@@ -59,6 +59,7 @@ import com.yuyan.imemodule.view.FullDisplayKeyboardBar
 import com.yuyan.imemodule.view.popup.PopupComponent
 import com.yuyan.imemodule.view.preference.ManagedPreference
 import com.yuyan.inputmethod.CustomEngine
+import com.yuyan.inputmethod.UserLearning
 import com.yuyan.inputmethod.core.CandidateListItem
 import splitties.views.bottomPadding
 import splitties.views.rightPadding
@@ -338,6 +339,7 @@ class InputView(context: Context, private val service: ImeService) : IKeyboardVi
     }
 
     override fun processKeyUp(event: KeyEvent): Boolean {
+        if (event.keyCode != KeyEvent.KEYCODE_DEL) UserLearning.clearPendingUndo() // 上屏后按了别的键，删除就不再算撤销学习
         if(event.isSystem) return processSystemKeys(event)
         else if(isFunctionKey(event.keyCode)){
             processFunctionKey(event)
@@ -469,6 +471,7 @@ class InputView(context: Context, private val service: ImeService) : IKeyboardVi
         return when {
             keyCode == KeyEvent.KEYCODE_DEL -> {
                 if (DictDecoder.isCandidatesEmpty || DictDecoder.isAssociate) {
+                    UserLearning.onDeleteAfterCommit(service.getTextBeforeCursor(UserLearning.MAX_TEXT_LENGTH))
                     service.getTextBeforeCursor(1).takeIf { it.isNotEmpty() }?.let { textBeforeCursors.push(it) }
                     sendKeyEvent(keyCode)
                 } else {
@@ -506,6 +509,7 @@ class InputView(context: Context, private val service: ImeService) : IKeyboardVi
     fun chooseAndUpdate(candId: Int = mSkbCandidatesBarView.getActiveCandNo()) {
         val candidate = DictDecoder.getCandidate(candId)
         if (candidate?.comment == "📋") {
+            InputDispatcher.onCustomCandidateCommitted(candidate.text)
             commitDecInfoText(candidate.text)
             if (!InputModeSwitcher.isEnglish) resetToIdleState() // 自定义候选不经过Rime，上屏后清掉Rime里残留的拼音
         } else {
@@ -630,11 +634,13 @@ class InputView(context: Context, private val service: ImeService) : IKeyboardVi
     }
 
     private fun commitText(text: String) {
+        UserLearning.clearPendingUndo()
         if (isAddPhrases) mAddPhrasesLayout.commitText(text)
         else service.commitText(StringUtils.converted2FlowerTypeface(text))
     }
 
     private fun commitPairSymbol(text: String) {
+        UserLearning.clearPendingUndo()
         if (isAddPhrases) {
             mAddPhrasesLayout.commitText(text)
         } else {

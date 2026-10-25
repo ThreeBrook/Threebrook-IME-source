@@ -24,6 +24,8 @@ object RimeEngine {
     var preCommitText: String = "" // 待提交的文字
     private var customPhraseSize: Int = 0 // 自定义引擎候选词长度
     private var rimeIndexMap: IntArray = IntArray(0) // 展示位置 -> Rime候选下标，自定义候选为-1
+    private var learningKey: String? = null // 本次输入的学习键（尚未选字时的拼音）
+    private var learnedInjected: Set<String> = emptySet() // 由学习插入、不在Rime候选里的词
     private const val DYNAMIC_PHRASE_POSITION = 1 // 日期时间排在首选之后
     private const val EMOJI_MIN_POSITION = 5 // 表情至少排在前5个文字候选之后
     const val MASK_CASE_LOWER = 0
@@ -128,12 +130,14 @@ object RimeEngine {
      * 组装候选：常用语在最前，日期时间排在首选之后，表情排在前几个文字候选之后。
      * 同时记录每个展示位置对应的Rime候选下标，供选词时换算
      */
-    private fun arrangeCandidates(phrase: List<String>, dynamicPhrase: List<String>, candidates: List<CandidateListItem>): List<CandidateListItem> {
+    private fun arrangeCandidates(phrase: List<String>, dynamicPhrase: List<String>, candidates: List<CandidateListItem>, key: String?): List<CandidateListItem> {
         val (emojis, words) = candidates.withIndex().partition { StringUtils.isEmoji(it.value.text) }
         val rimeOrdered = words.toMutableList().apply { addAll(EMOJI_MIN_POSITION.coerceAtMost(size), emojis) }
+            .map { it.value to it.index }.toMutableList()
+        learnedInjected = if (key != null) UserLearning.rank(key, rimeOrdered, "📋") else emptySet()
         val result = mutableListOf<Pair<CandidateListItem, Int>>()
         phrase.forEach { result.add(CandidateListItem("📋", it) to -1) }
-        rimeOrdered.forEach { result.add(it.value to it.index) }
+        result.addAll(rimeOrdered)
         val dynamicPosition = (phrase.size + DYNAMIC_PHRASE_POSITION).coerceAtMost(result.size)
         result.addAll(dynamicPosition, dynamicPhrase.map { CandidateListItem("📋", it) to -1 })
         rimeIndexMap = result.map { it.second }.toIntArray()
@@ -145,12 +149,21 @@ object RimeEngine {
         pinyins = emptyArray()
         showComposition = ""
         preCommitText = ""
+        learningKey = null
+        learnedInjected = emptySet()
         keyRecordStack.clear()
         Rime.clearComposition()
         if(charCase == KeyEvent.META_SHIFT_ON) charCase = MASK_CASE_LOWER
     }
 
     fun destroy() = Rime.destroy()
+
+    /**
+     * 点选了自定义候选（📋）上屏：如果是学习插入的词，同样记一次使用
+     */
+    fun onCustomCandidateCommitted(text: String) {
+        if (text in learnedInjected) learningKey?.let { UserLearning.record(it, text) }
+    }
 
     private fun updateCandidatesOrCommitText(): String? {
         val rimeCommit = Rime.getRimeCommit()
@@ -164,6 +177,8 @@ object RimeEngine {
             } else {
                 preCommitText.lowercase()
             }
+            learningKey?.let { UserLearning.record(it, preCommitText) }
+            learningKey = null
             showComposition = ""
             showCandidates = emptyList()
             return preCommitText
@@ -172,6 +187,16 @@ object RimeEngine {
         customPhraseSize = 0
         rimeIndexMap = IntArray(0)
         val compositionText = Rime.compositionText
+        var count = Rime.compositionText.count { it in 'A'..'Z' }
+        if (count > 0) {
+            keyRecordStack.forEachReversed { inputKey ->
+                if (inputKey is InputKey.T9Key) inputKey.consumed = count-- <= 0
+            }
+        }
+        var composition = getCurrentComposition(candidates)
+        // 还没选字时的拼音作为学习键；选过字后拼音里会混入汉字，沿用之前的键，整段上屏时按整词记录
+        val key = if (InputModeSwitcher.isEnglish) null else UserLearning.keyOf(composition)
+        if (key != null) learningKey = key
         showCandidates = when {
             compositionText.isNotBlank() -> {
                 val code = compositionText.replace("\'", "")
@@ -182,17 +207,10 @@ object RimeEngine {
                 }
                 val dynamicPhrase = CustomEngine.processDynamicPhrase(code)
                 customPhraseSize = phrase.size + dynamicPhrase.size
-                arrangeCandidates(phrase, dynamicPhrase, candidates)
+                arrangeCandidates(phrase, dynamicPhrase, candidates, key)
             }
             else -> candidates
         }
-        var count = Rime.compositionText.count { it in 'A'..'Z' }
-        if (count > 0) {
-            keyRecordStack.forEachReversed { inputKey ->
-                if (inputKey is InputKey.T9Key) inputKey.consumed = count-- <= 0
-            }
-        }
-        var composition = getCurrentComposition(candidates)
         when (charCase) {
             KeyEvent.META_SHIFT_ON -> {
                 for (item in showCandidates) item.text = item.text.lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }

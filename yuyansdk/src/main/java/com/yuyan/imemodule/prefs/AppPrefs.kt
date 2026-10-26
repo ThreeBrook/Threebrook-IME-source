@@ -26,7 +26,7 @@ class AppPrefs(private val sharedPreferences: SharedPreferences) {
         val inputDefaultMode = int("input_default_method_mode", InputModeSwitcher.MODE_T9_CHINESE)   //默认输入法类型
         val inputMethodPinyinMode = int("input_method_pinyin_mode", InputModeSwitcher.MODE_T9_CHINESE)  // 保存中文输入法类型
         val dataDictVersion = int("rime_dict_data_version", 0)  //缓存rime词库版本号,用于校验是否覆盖词库文件
-        val keyboardHeightRatio = float("keyboard_height_ratio", 0.3f)     //键盘高度比例
+        val keyboardHeightRatio = float("keyboard_height_ratio", 0.225f)     //键盘高度比例（三溪：比语燕的 0.3 矮四分之一）
         val keyboardHeightRatioLandscape = float("keyboard_height_ratio_landscape", 0.5f)     //键盘高度比例:横屏
         val candidatesHeightRatio = float("candidates_height_ratio", 0.035f)     //候选词栏高度比例
         val candidatesHeightRatioLandscape = float("candidates_height_ratio_landscape", 0.06f)     //候选词栏高度比例:横屏
@@ -40,13 +40,13 @@ class AppPrefs(private val sharedPreferences: SharedPreferences) {
         val keyboardRightPadding = int("keyboard_padding_right_normal", DevicesUtils.dip2px(0))     //竖屏非悬浮右边距
         val clipboardUpdateTime = long("clipboard_update_time", 0)     //剪切板更新时间
         val clipboardUpdateContent = string("clipboard_update_content","")     //剪切板更新内容
-        val fullDisplayKeyboardEnable = bool("full_display_keyboard_enable", true)     //全面屏键盘优化
+        val fullDisplayKeyboardEnable = bool("full_display_keyboard_enable", false)     //全面屏键盘优化：键盘下方的切换输入法 / 剪贴板一栏，三溪默认不显示
         val fullDisplayKeyModeLeft = string("full_display_key_mode_left", FullDisplayKeyMode.SwitchIme.name)     //全面屏键盘优化:左键盘
         val fullDisplayKeyModeRight = string("full_display_key_mode_right", FullDisplayKeyMode.Clipboard.name)     //全面屏键盘优化：右键盘
         val fullDisplayCenterMode = string("full_display_center_mode", FullDisplayCenterMode.MoveCursor.name)     //全面屏键盘优化：中间区域
 
-        val soundOnKeyPress = int("key_press_vibration_amplitude",0)     //按键音量
-        val vibrationAmplitude = int("key_press_sound_volume", 0)     //触感强度
+        val soundOnKeyPress = int("key_press_vibration_amplitude",10)     //按键音量：0-4 跟随系统，5-10 关闭，11-40 自定义；三溪默认关闭
+        val vibrationAmplitude = int("key_press_sound_volume", 1)     //触感强度：0 跟随系统，1 关闭，2-4 自定义；三溪默认关闭
 
         val privacyPolicySure = bool("privacy_policy_sure", false) //是否同意隐私政策
     }
@@ -120,7 +120,7 @@ class AppPrefs(private val sharedPreferences: SharedPreferences) {
         val candidateTextSize = int(
             R.string.candidate_size_input_setting,
             "candidate_size",
-            55,
+            40,
             25,
             100,
             "%",

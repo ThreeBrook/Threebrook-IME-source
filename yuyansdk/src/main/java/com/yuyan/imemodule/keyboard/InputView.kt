@@ -506,6 +506,20 @@ class InputView(context: Context, private val service: ImeService) : IKeyboardVi
         if (hasSelectionAll) hasSelectionAll = false
     }
 
+    /**
+     * 长按空格语音输入：按住说话、上滑取消、松开上屏。正在输入的拼音先清掉，候选栏用来显示录音状态。
+     */
+    fun startVoiceInput(view: View): Boolean {
+        if (!DictDecoder.isCandidatesEmpty) resetToIdleState()
+        return mSkbCandidatesBarView.startVoice(view)
+    }
+
+    fun setVoiceCanceling(canceling: Boolean) = mSkbCandidatesBarView.setVoiceCanceling(canceling)
+
+    fun finishVoiceInput() = mSkbCandidatesBarView.finishVoice()
+
+    fun cancelVoiceInput() = mSkbCandidatesBarView.cancelVoice()
+
     fun chooseAndUpdate(candId: Int = mSkbCandidatesBarView.getActiveCandNo()) {
         val candidate = DictDecoder.getCandidate(candId)
         if (candidate?.comment == "📋") {

@@ -95,7 +95,7 @@ class ThemePrefs(sharedPreferences: SharedPreferences) :
     val keyboardFontSize = int(
         R.string.keyboard_font_size,
         "keyboard_font_size",
-        100,
+        75,
         70,
         170,
         "%"

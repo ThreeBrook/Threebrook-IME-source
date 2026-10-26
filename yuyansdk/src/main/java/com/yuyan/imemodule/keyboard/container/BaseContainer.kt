@@ -50,7 +50,7 @@ open class BaseContainer(@JvmField var mContext: Context, @JvmField protected va
         val rootView = LayoutInflater.from(context).inflate(R.layout.layout_ime_keyboard_height_shadow, this, false)
         this.addView(rootView)
         rootView.findViewById<View>(R.id.ll_keyboard_height_reset).setOnClickListener { _: View? ->
-            EnvironmentSingleton.instance.keyBoardHeightRatio = 0.3f
+            EnvironmentSingleton.instance.keyBoardHeightRatio = AppPrefs.getInstance().internal.keyboardHeightRatio.defaultValue
             EnvironmentSingleton.instance.initData()
             KeyboardLoaderUtil.instance.clearKeyboardMap()
             KeyboardManager.instance.clearKeyboard()

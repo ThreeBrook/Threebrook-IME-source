@@ -243,9 +243,9 @@
     <string name="voice_model_import_failed">导入失败：%s</string>
     <string name="voice_model_skip_unknown">已跳过（不是模型文件）：%s</string>
     <string name="voice_model_skip_small">已跳过（文件太小，可能没下载完）：%s</string>
-    <string name="voice_model_help">语音输入在手机本地识别，需要两个模型文件：%1$s（约 228 MB）和 %2$s。\n\n1. 用手机浏览器下载这两个文件（也可以在电脑上下载后用微信文件传输等方式发到手机）：\n\n%3$s\n\n%4$s\n\n（国外网络可把网址里的 hf-mirror.com 换成 huggingface.co）\n\n2. 点上面的“导入模型文件”，在文件里同时选中这两个文件（也可以分两次导入）。\n\n导入完成后，回到输入框按住键盘工具栏的麦克风说话。</string>
+    <string name="voice_model_help">语音输入在手机本地识别，需要两个模型文件：%1$s（约 228 MB）和 %2$s。\n\n1. 用手机浏览器下载这两个文件（也可以在电脑上下载后用微信文件传输等方式发到手机）：\n\n%3$s\n\n%4$s\n\n（国外网络可把网址里的 hf-mirror.com 换成 huggingface.co）\n\n2. 点上面的“导入模型文件”，在文件里同时选中这两个文件（也可以分两次导入）。\n\n导入完成后，回到输入框长按空格键说话，松开出字。</string>
     <string name="voice_record_failed">无法使用麦克风</string>
-    <string name="voice_permission_granted">麦克风权限已开启，回到输入框按住麦克风说话</string>
+    <string name="voice_permission_granted">麦克风权限已开启，回到输入框长按空格键说话</string>
     <string name="voice_permission_denied">未授予麦克风权限，无法使用语音输入</string>
 
     <!-- 关于 -->

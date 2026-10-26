@@ -40,6 +40,8 @@ open class BaseKeyboardView(mContext: Context?) : View(mContext) {
     private var mGestureDetector: GestureDetector? = null
     protected var mLongPressKey = false
     private var mAbortKey = false
+    private var mVoiceKey = false  // 长按空格正在语音输入
+    private var mVoiceCancelY = 0f  // 手指上滑过这条线松开就取消语音
     private var mHandler: Handler? = null
     protected var mDrawPending = false
     protected var mService: InputView? = null
@@ -97,6 +99,12 @@ open class BaseKeyboardView(mContext: Context?) : View(mContext) {
     private fun openPopupIfRequired() {
         if(mCurrentKey != null) {
             val softKey = mCurrentKey!!
+            if (softKey.code == KeyEvent.KEYCODE_SPACE) {  // 长按空格：语音输入，松开时不再输入空格
+                mAbortKey = true
+                mVoiceKey = mService?.startVoiceInput(this) == true
+                mVoiceCancelY = softKey.mTop - (softKey.mBottom - softKey.mTop).toFloat()
+                return
+            }
             val keyboardSymbol = ThemeManager.prefs.keyboardSymbol.getValue()
             if (softKey.getkeyLabel().isNotBlank() && softKey.code != InputModeSwitcher.USER_KEYCODE_COMMA_EMOJI ) {
                 val keyLabel = if (InputModeSwitcher.isLower) softKey.keyLabel.lowercase() else softKey.keyLabel
@@ -126,6 +134,16 @@ open class BaseKeyboardView(mContext: Context?) : View(mContext) {
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(me: MotionEvent): Boolean {
         var result = false
+        if (mVoiceKey) {  // 语音录音中：上滑超过一个按键高度后松开取消；松开时继续走下面的流程复位按键
+            when (me.actionMasked) {
+                MotionEvent.ACTION_MOVE -> {
+                    mService?.setVoiceCanceling(me.y < mVoiceCancelY)
+                    return true
+                }
+                MotionEvent.ACTION_UP -> { mVoiceKey = false; mService?.finishVoiceInput() }
+                MotionEvent.ACTION_CANCEL -> { mVoiceKey = false; mService?.cancelVoiceInput() }
+            }
+        }
         if (mGestureDetector!!.onTouchEvent(me)) {
             return true
         }
@@ -341,6 +359,10 @@ open class BaseKeyboardView(mContext: Context?) : View(mContext) {
 
     open fun closing() {
         removeMessages()
+        if (mVoiceKey) {
+            mVoiceKey = false
+            mService?.cancelVoiceInput()
+        }
     }
 
     private fun showBalloonText(key: SoftKey) {

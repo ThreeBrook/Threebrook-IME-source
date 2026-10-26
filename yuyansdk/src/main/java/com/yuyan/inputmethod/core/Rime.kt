@@ -15,6 +15,8 @@ class Rime(fullCheck: Boolean) {
     }
 
     companion object {
+        // 每次按键引擎生成的候选数。语燕原为100，候选栏一屏只显示几个，多生成的每次按键都白算；后面的候选翻页时再取
+        private const val PAGE_SIZE = 30
         private var instance: Rime? = null
         private var mContext: RimeContext? = null
         private var mStatus: RimeStatus? = null
@@ -80,7 +82,7 @@ class Rime(fullCheck: Boolean) {
         @JvmStatic
         fun processKey(keycode: Int, mask: Int): Boolean {
             if (keycode <= 0 || keycode == 0xffffff) return false
-            setRimePageSize(100)
+            setRimePageSize(PAGE_SIZE)
             return processRimeKey(keycode, mask).also {
                 updateContext()
             }

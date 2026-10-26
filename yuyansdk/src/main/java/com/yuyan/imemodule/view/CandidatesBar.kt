@@ -66,7 +66,6 @@ class CandidatesBar(context: Context?, attrs: AttributeSet?) : RelativeLayout(co
     private lateinit var mRVContainerMenu:RecyclerView   // 候选词栏菜单
     private lateinit var mCandidatesMenuAdapter: CandidatesMenuAdapter
     private lateinit var candidatesData: LinearLayout //候选词视图
-    private lateinit var mIvVoice: ImageView // 语音输入按钮，按住说话
     private lateinit var mVoiceStatus: TextView // 语音输入状态提示
     private var voiceCanceling = false // 手指上滑到取消区域
     private var hideVoiceStatusJob: Job? = null
@@ -228,18 +227,10 @@ class CandidatesBar(context: Context?, attrs: AttributeSet?) : RelativeLayout(co
                 setTextColor(ThemeManager.activeTheme.keyTextColor)
                 visibility = GONE
             }
-            mIvVoice = ImageView(context).apply {
-                setImageResource(R.drawable.ic_menu_voice)
-                setOnTouchListener { view, event ->
-                    onVoiceTouch(view, event)
-                    true
-                }
-            }
             mCandidatesMenuContainer.addView(mIvMenuSetting)
             mCandidatesMenuContainer.addView(mLlContainer)
             mCandidatesMenuContainer.addView(mRVContainerMenu)
             mCandidatesMenuContainer.addView(mVoiceStatus)
-            mCandidatesMenuContainer.addView(mIvVoice)
             mCandidatesMenuContainer.addView(mMenuRightArrowBtn)
             this.addView(
                 mCandidatesMenuContainer,
@@ -254,62 +245,58 @@ class CandidatesBar(context: Context?, attrs: AttributeSet?) : RelativeLayout(co
         mRVContainerMenu.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, menuHeight, 1f)
         mVoiceStatus.layoutParams = LinearLayout.LayoutParams(0, menuHeight, 1f)
         mVoiceStatus.textSize = instance.candidateTextSize * 0.7f
-        mIvVoice.layoutParams = LinearLayout.LayoutParams(menuHeight, menuHeight, 0f).apply { marginEnd = dp(10) }
-        mIvVoice.setPadding(dp(4), dp(4), dp(4), dp(4))
         mCandidatesMenuAdapter.notifyChanged()  // 点击下拉菜单后，需要刷新菜单栏
     }
 
     /**
-     * 语音按钮：按下开始录音，松开识别上屏，上滑超过按钮高度后松开则取消
+     * 语音输入（长按空格触发）：开始录音，返回是否已开始。状态提示显示在候选栏。
      */
-    private fun onVoiceTouch(view: View, event: MotionEvent) {
-        when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
-                when {
-                    !VoiceInputManager.isModelReady(context) -> showVoiceStatus(R.string.voice_model_missing, autoHide = true)
-                    !VoiceInputManager.hasPermission(context) -> VoicePermissionActivity.start(context)
-                    !VoiceInputManager.startRecording() -> showVoiceStatus(R.string.voice_record_failed, autoHide = true)
-                    else -> {
-                        DevicesUtils.tryVibrate(view)
-                        VoiceInputManager.preload(context)
-                        voiceCanceling = false
-                        mIvVoice.alpha = 0.5f
-                        showVoiceStatus(R.string.voice_listening)
-                    }
-                }
-            }
-            MotionEvent.ACTION_MOVE -> {
-                if (!VoiceInputManager.isRecording) return
-                val canceling = event.y < -view.height
-                if (canceling != voiceCanceling) {
-                    voiceCanceling = canceling
-                    showVoiceStatus(if (canceling) R.string.voice_release_to_cancel else R.string.voice_listening)
-                }
-            }
-            MotionEvent.ACTION_UP -> {
-                if (!VoiceInputManager.isRecording) return
-                mIvVoice.alpha = 1f
-                if (voiceCanceling) {
-                    VoiceInputManager.cancel()
-                    hideVoiceStatus()
-                } else {
-                    showVoiceStatus(R.string.voice_recognizing)
-                    VoiceInputManager.stopAndRecognize(context) { text ->
-                        if (text.isEmpty()) {
-                            showVoiceStatus(R.string.voice_no_result, autoHide = true)
-                        } else {
-                            hideVoiceStatus()
-                            mCvListener.onVoiceResult(text)
-                        }
-                    }
-                }
-            }
-            MotionEvent.ACTION_CANCEL -> {
-                mIvVoice.alpha = 1f
-                VoiceInputManager.cancel()
-                hideVoiceStatus()
+    fun startVoice(view: View): Boolean {
+        when {
+            !VoiceInputManager.isModelReady(context) -> showVoiceStatus(R.string.voice_model_missing, autoHide = true)
+            !VoiceInputManager.hasPermission(context) -> VoicePermissionActivity.start(context)
+            !VoiceInputManager.startRecording() -> showVoiceStatus(R.string.voice_record_failed, autoHide = true)
+            else -> {
+                DevicesUtils.tryVibrate(view)
+                VoiceInputManager.preload(context)
+                voiceCanceling = false
+                showVoiceStatus(R.string.voice_listening)
+                return true
             }
         }
+        return false
+    }
+
+    /** 手指上滑到取消区域时为 true，松开就取消 */
+    fun setVoiceCanceling(canceling: Boolean) {
+        if (!VoiceInputManager.isRecording || canceling == voiceCanceling) return
+        voiceCanceling = canceling
+        showVoiceStatus(if (canceling) R.string.voice_release_to_cancel else R.string.voice_listening)
+    }
+
+    /** 松开手指：识别并上屏，处在取消区域则放弃 */
+    fun finishVoice() {
+        if (!VoiceInputManager.isRecording) return
+        if (voiceCanceling) {
+            VoiceInputManager.cancel()
+            hideVoiceStatus()
+            return
+        }
+        showVoiceStatus(R.string.voice_recognizing)
+        VoiceInputManager.stopAndRecognize(context) { text ->
+            if (text.isEmpty()) {
+                showVoiceStatus(R.string.voice_no_result, autoHide = true)
+            } else {
+                hideVoiceStatus()
+                mCvListener.onVoiceResult(text)
+            }
+        }
+    }
+
+    fun cancelVoice() {
+        if (!VoiceInputManager.isRecording) return
+        VoiceInputManager.cancel()
+        hideVoiceStatus()
     }
 
     /**
@@ -325,6 +312,7 @@ class CandidatesBar(context: Context?, attrs: AttributeSet?) : RelativeLayout(co
         mVoiceStatus.setText(textRes)
         mVoiceStatus.visibility = VISIBLE
         mRVContainerMenu.visibility = GONE
+        showViewVisibility(mCandidatesMenuContainer)
         if (autoHide) hideVoiceStatusJob = serviceScope.launch {
             delay(1500)
             hideVoiceStatus()
@@ -335,6 +323,7 @@ class CandidatesBar(context: Context?, attrs: AttributeSet?) : RelativeLayout(co
         hideVoiceStatusJob?.cancel()
         mVoiceStatus.visibility = GONE
         mRVContainerMenu.visibility = VISIBLE
+        showCandidates()
     }
 
     private fun onClickMenu(skbMenuMode: SkbMenuMode, view: View?) {
@@ -497,7 +486,6 @@ class CandidatesBar(context: Context?, attrs: AttributeSet?) : RelativeLayout(co
         mMenuRightArrowBtn.drawable.setTint(textColor)
         menuSettingTint = textColor
         setMenuSettingLevel(mIvMenuSetting.drawable.level)
-        mIvVoice.drawable.setTint(textColor)
         mVoiceStatus.setTextColor(textColor)
         mCandidatesAdapter.notifyChanged()
         mCandidatesMenuAdapter.notifyChanged()

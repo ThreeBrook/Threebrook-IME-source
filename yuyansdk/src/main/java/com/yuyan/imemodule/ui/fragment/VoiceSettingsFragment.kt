@@ -180,8 +180,8 @@ class VoiceSettingsFragment : Fragment() {
 
     companion object {
         private const val MIN_MODEL_BYTES = 50L shl 20 // 小于50MB的.onnx不是完整的SenseVoice模型
-        // 与已测试的 SenseVoice int8 2024-07-17 模型逐字节一致；hf-mirror.com 是 huggingface.co 的国内镜像
-        private const val MODEL_URL = "https://hf-mirror.com/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/resolve/main/model.int8.onnx"
-        private const val TOKENS_URL = "https://hf-mirror.com/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/resolve/main/tokens.txt"
+        // 三溪自己的下载地址，与已测试的 SenseVoice int8 2024-07-17 模型一致；地址不带 App 版本号，换版本不用改
+        private const val MODEL_URL = "https://dl.threebrook.com/ime/models/sensevoice-2024-07-17/model.int8.onnx"
+        private const val TOKENS_URL = "https://dl.threebrook.com/ime/models/sensevoice-2024-07-17/tokens.txt"
     }
 }

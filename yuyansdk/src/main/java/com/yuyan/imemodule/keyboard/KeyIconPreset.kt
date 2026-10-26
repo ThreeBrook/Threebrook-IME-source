@@ -21,7 +21,7 @@ val keyIconRecords: Map<Int, Drawable?> = mapOf(
     Objects.hash(InputModeSwitcher.USER_KEYCODE_LANG, 2) to ContextCompat.getDrawable(Launcher.instance.context, R.drawable.sdk_skb_key_input_mode_language),
     Objects.hash(InputModeSwitcher.USER_KEYCODE_EMOJI, 0) to ContextCompat.getDrawable(Launcher.instance.context, R.drawable.ic_menu_emoji),
     Objects.hash(InputModeSwitcher.USER_KEYCODE_COMMA_EMOJI, 0) to ContextCompat.getDrawable(Launcher.instance.context, R.drawable.skb_key_comma_emoji),
-    Objects.hash(KeyEvent.KEYCODE_SPACE, 0) to ContextCompat.getDrawable(Launcher.instance.context, R.drawable.sdk_skb_key_space_icon),
+    Objects.hash(KeyEvent.KEYCODE_SPACE, 0) to ContextCompat.getDrawable(Launcher.instance.context, R.drawable.sdk_skb_key_space_voice_icon), // 带麦克风：长按空格语音输入
     Objects.hash(KeyEvent.KEYCODE_ENTER, 0) to ContextCompat.getDrawable(Launcher.instance.context, R.drawable.sdk_skb_key_enter_icon),
     Objects.hash(KeyEvent.KEYCODE_ENTER, 1) to ContextCompat.getDrawable(Launcher.instance.context, R.drawable.sdk_skb_key_enter_icon),
     Objects.hash(KeyEvent.KEYCODE_DEL, 0) to ContextCompat.getDrawable(Launcher.instance.context, R.drawable.sdk_skb_key_delete_icon),

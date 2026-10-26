@@ -202,9 +202,16 @@ open class TextKeyboard(context: Context?) : BaseKeyboardView(context){
                 intrinsicWidth /= 2
                 intrinsicHeight /= 2
             }
+            // 顶部画了小字（如九宫格空格键上的 0）时，图标放在小字下方的区域里，按需缩小，不和小字重叠
+            val topReserved = if (keyboardSymbol && !TextUtils.isEmpty(keyLabelSmall)) (weightHeigth * 1.25f).toInt() else 0
+            val availableHeight = softKey.height() - topReserved
+            if (topReserved > 0 && intrinsicHeight > availableHeight) {
+                intrinsicWidth = intrinsicWidth * availableHeight / intrinsicHeight
+                intrinsicHeight = availableHeight
+            }
             val marginLeft = (softKey.width() - intrinsicWidth) / 2
             val marginRight = softKey.width() - intrinsicWidth - marginLeft
-            val marginTop = (softKey.height() - intrinsicHeight) / 2
+            val marginTop = topReserved + (availableHeight - intrinsicHeight) / 2
             val marginBottom = softKey.height() - intrinsicHeight - marginTop
             keyIcon.setTint(textColor)
             keyIcon.setBounds(softKey.mLeft + marginLeft, softKey.mTop + marginTop, softKey.mRight - marginRight, softKey.mBottom - marginBottom)

@@ -2,6 +2,7 @@ package com.yuyan.imemodule.service
 
 import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
+import android.os.Looper
 import android.os.SystemClock
 import android.text.InputType
 import android.view.KeyCharacterMap
@@ -75,6 +76,11 @@ class ImeService : InputMethodService() {
         showVirtualKeyboardOnPhysicalKeyboard = getInstance().keyboardSetting.showVirtualKeyboardOnPhysicalKeyboard.getValue() // 启动时读取已保存的设置
         handleHardwareKeyboard()
         DictDecoder.candidatesLiveData.observeForever(candidatesObserver)
+        // 进程启动后趁主线程空闲先把键盘建好，点输入框时不用再现建（冷启动最耗时的一步）
+        Looper.myQueue().addIdleHandler {
+            if (!::inputView.isInitialized) inputView = InputView(baseContext, this)
+            false
+        }
     }
 
     override fun onCreateInputView(): View {

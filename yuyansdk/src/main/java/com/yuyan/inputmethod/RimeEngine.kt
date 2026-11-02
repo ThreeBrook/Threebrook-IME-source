@@ -135,7 +135,7 @@ object RimeEngine {
         val custom = (phrase + dynamicPhrase).map { it.lowercase() }.toSet()
         val (emojis, words) = candidates.withIndex().filter { it.value.text.lowercase() !in custom }
             .partition { StringUtils.isEmoji(it.value.text) }
-        val rimeOrdered = words.toMutableList().apply { addAll(EMOJI_MIN_POSITION.coerceAtMost(size), emojis) }
+        val rimeOrdered = words.toMutableList().apply { Colloquial.boost(this) }.apply { addAll(EMOJI_MIN_POSITION.coerceAtMost(size), emojis) }
             .map { it.value to it.index }.toMutableList()
         learnedInjected = if (key != null) UserLearning.rank(key, rimeOrdered, "📋") else emptySet()
         val result = mutableListOf<Pair<CandidateListItem, Int>>()

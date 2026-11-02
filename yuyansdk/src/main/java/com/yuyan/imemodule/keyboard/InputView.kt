@@ -81,7 +81,9 @@ class InputView(context: Context, private val service: ImeService) : IKeyboardVi
     private var mHoderLayoutLeft: LinearLayout
     private var mHoderLayoutRight: LinearLayout
     private lateinit var mOnehandHoderLayout: LinearLayout
-    var mAddPhrasesLayout: EditPhrasesView
+    // 常用语编辑面板只在添加常用语时用到，用到时再创建，省下键盘首次弹出的时间
+    private val addPhrasesLayoutLazy = lazy { EditPhrasesView(context).apply { updateTheme(ThemeManager.activeTheme) } }
+    val mAddPhrasesLayout: EditPhrasesView by addPhrasesLayoutLazy
     private var mLlKeyboardBottomHolder: LinearLayout
     private var mInputKeyboardContainer: RelativeLayout
     private lateinit var mRightPaddingKey: ManagedPreference.PInt
@@ -100,7 +102,6 @@ class InputView(context: Context, private val service: ImeService) : IKeyboardVi
         mHoderLayoutLeft = mSkbRoot.findViewById(R.id.ll_skb_holder_layout_left)
         mHoderLayoutRight = mSkbRoot.findViewById(R.id.ll_skb_holder_layout_right)
         mInputKeyboardContainer = mSkbRoot.findViewById(R.id.ll_input_keyboard_container)
-        mAddPhrasesLayout = EditPhrasesView(context)
         mLlKeyboardBottomHolder = mSkbRoot.findViewById(R.id.iv_keyboard_holder)
         KeyboardManager.instance.setData(mSkbRoot.findViewById(R.id.skb_input_keyboard_view), this)
         PopupComponent.get().root.let { root ->
@@ -128,7 +129,7 @@ class InputView(context: Context, private val service: ImeService) : IKeyboardVi
                 })
                 mAddPhrasesLayout.handleAddPhrasesView()
             }
-        } else {
+        } else if (addPhrasesLayoutLazy.isInitialized()) {
             removeView(mAddPhrasesLayout)
         }
         mSkbCandidatesBarView.initialize(mChoiceNotifier)
@@ -257,7 +258,7 @@ class InputView(context: Context, private val service: ImeService) : IKeyboardVi
             (mOnehandHoderLayout[1] as ImageButton).drawable?.setTint(keyTextColor)
         }
         mFullDisplayKeyboardBar?.updateTheme(keyTextColor)
-        mAddPhrasesLayout.updateTheme(activeTheme)
+        if (addPhrasesLayoutLazy.isInitialized()) mAddPhrasesLayout.updateTheme(activeTheme)
     }
 
     private fun onClick(view: View) {

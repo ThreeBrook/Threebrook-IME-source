@@ -17,7 +17,7 @@ import kotlin.math.pow
  * 用户词学习，替代Rime自带的学习（Rime的学习速度、遗忘都写死在引擎里，误选一次就能排到第一）。
  * 规则：
  * - 每次整段上屏，记一条"拼音 -> 上屏的词"，逐字拼出的新词按整词记录
- * - 门槛：权重达到 TOP_SCORE（约3次）才可能排第一，否则最多排第二
+ * - 门槛：权重达到 TOP_SCORE（约2次）才可能排第一，否则最多排第二
  * - 遗忘：权重每 HALF_LIFE_DAYS 天减半，低于 MIN_SCORE 不再参与排序
  * - 撤销：上屏后紧接着按删除键删掉刚上屏的词，这次不算
  * 数据存在 files/learning.tsv，启动时读入内存，修改后延迟写回
@@ -25,7 +25,7 @@ import kotlin.math.pow
 object UserLearning {
     private const val TAG = "UserLearning"
     private const val FILE_NAME = "learning.tsv"
-    const val TOP_SCORE = 2.5 // 3次使用（考虑少量衰减）才能排第一
+    const val TOP_SCORE = 1.5 // 30天内用过2次才能排第一（九宫格撞车的词多，3次太慢）
     const val MIN_SCORE = 0.5 // 低于此权重视为已遗忘
     const val MAX_TEXT_LENGTH = 20 // 超过这个长度的上屏内容不学习
     private const val PRUNE_SCORE = 0.1 // 低于此权重时从文件中删除

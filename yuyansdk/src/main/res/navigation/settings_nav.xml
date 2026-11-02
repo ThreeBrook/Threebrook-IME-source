@@ -20,6 +20,9 @@
             android:id="@+id/action_settingsFragment_to_learnedWordsFragment"
             app:destination="@id/learnedWordsFragment" />
         <action
+            android:id="@+id/action_settingsFragment_to_bilingualFragment"
+            app:destination="@id/bilingualFragment" />
+        <action
             android:id="@+id/action_settingsFragment_to_themeSettingsFragment"
             app:destination="@id/themeFragment" />
         <action
@@ -62,6 +65,10 @@
         android:id="@+id/handwritingSettingsFragment"
         android:name="com.yuyan.imemodule.ui.fragment.HandwritingSettingsFragment"
         android:label="@string/ime_settings_handwriting" />
+    <fragment
+        android:id="@+id/bilingualFragment"
+        android:name="com.yuyan.imemodule.ui.fragment.BilingualFragment"
+        android:label="@string/bilingual" />
     <fragment
         android:id="@+id/learnedWordsFragment"
         android:name="com.yuyan.imemodule.ui.fragment.LearnedWordsFragment"

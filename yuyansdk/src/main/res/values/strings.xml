@@ -281,4 +281,26 @@
     <string name="learned_words_level_top">可排第一</string>
     <string name="learned_words_level_second">最多排第二</string>
     <string name="learned_words_level_forgotten">已淡忘</string>
+    <string name="bilingual">双语学习</string>
+    <string name="bilingual_mode">双语学习模式</string>
+    <string name="bilingual_mode_summary">打中文时候选后面显示英文意思，打英文时显示中文意思；长按候选可以看详情、听发音、加入生词本。词典离线，不联网。</string>
+    <string name="bilingual_target_language">目标语言：%s</string>
+    <string name="bilingual_language_en">英语</string>
+    <string name="bilingual_speak">发音</string>
+    <string name="bilingual_add_vocabulary">加入生词本</string>
+    <string name="bilingual_in_vocabulary">已在生词本</string>
+    <string name="bilingual_close">关闭</string>
+    <string name="bilingual_meaning_line">· %s</string>
+    <string name="bilingual_tts_unavailable">手机上没有可用的语音朗读引擎</string>
+    <string name="bilingual_tts_no_language">语音朗读引擎不支持这种语言，可在系统设置里下载语音数据</string>
+    <string name="bilingual_license">词典：CC-CEDICT（CC BY-SA 4.0，mdbg.net）、ECDICT（MIT，skywind3000），均已裁剪为常用词</string>
+    <string name="vocabulary_summary">生词本共 %d 个词，点击可删除</string>
+    <string name="vocabulary_review">复习（%d）</string>
+    <string name="vocabulary_review_progress">复习 %1$d / %2$d</string>
+    <string name="vocabulary_show_answer">看释义</string>
+    <string name="vocabulary_review_stop">结束</string>
+    <string name="vocabulary_remembered">记得</string>
+    <string name="vocabulary_forgot">忘了</string>
+    <string name="vocabulary_detail_due">复习过 %d 次 · 待复习</string>
+    <string name="vocabulary_detail">复习过 %1$d 次 · 下次复习 %2$s</string>
 </resources>

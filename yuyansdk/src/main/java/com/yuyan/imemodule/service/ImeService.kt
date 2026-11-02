@@ -1,5 +1,9 @@
 package com.yuyan.imemodule.service
 
+import com.yuyan.imemodule.utils.Speaker
+import com.yuyan.imemodule.view.BilingualCard
+import com.yuyan.inputmethod.Bilingual
+import com.yuyan.inputmethod.Vocabulary
 import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
 import android.os.Looper
@@ -76,6 +80,8 @@ class ImeService : InputMethodService() {
         showVirtualKeyboardOnPhysicalKeyboard = getInstance().keyboardSetting.showVirtualKeyboardOnPhysicalKeyboard.getValue() // 启动时读取已保存的设置
         handleHardwareKeyboard()
         DictDecoder.candidatesLiveData.observeForever(candidatesObserver)
+        Vocabulary.init(this)
+        Bilingual.init() // 双语学习模式开着时后台读词典
         // 进程启动后趁主线程空闲先把键盘建好，点输入框时不用再现建（冷启动最耗时的一步）
         Looper.myQueue().addIdleHandler {
             if (!::inputView.isInitialized) inputView = InputView(baseContext, this)
@@ -119,6 +125,7 @@ class ImeService : InputMethodService() {
     override fun onDestroy() {
         super.onDestroy()
         DictDecoder.candidatesLiveData.removeObserver(candidatesObserver)
+        Speaker.shutdown()
         getInstance().keyboardSetting.showVirtualKeyboardOnPhysicalKeyboard.unregisterOnChangeListener(showVirtualKeyboardOnPhysicalKeyboardListener)
         removeOnChangedListener(onThemeChangeListener)
         getInstance().internal.clipboardUpdateContent.unregisterOnChangeListener(clipboardUpdateContentListener)
@@ -208,6 +215,7 @@ class ImeService : InputMethodService() {
     }
 
     override fun onWindowHidden() {
+        BilingualCard.dismiss()
         if (::mInputView.isInitialized) mInputView.onWindowHidden()
         super.onWindowHidden()
     }

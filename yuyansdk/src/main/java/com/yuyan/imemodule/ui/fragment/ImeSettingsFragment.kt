@@ -60,6 +60,11 @@ class ImeSettingsFragment : PreferenceFragmentCompat() {
                     R.drawable.ic_menu_edit,
                     R.id.action_settingsFragment_to_learnedWordsFragment
                 )
+                addDestinationPreference(
+                    R.string.bilingual,
+                    R.drawable.ic_menu_language,
+                    R.id.action_settingsFragment_to_bilingualFragment
+                )
             }
             addCategory(R.string.keyboard) {
                 isIconSpaceReserved = false

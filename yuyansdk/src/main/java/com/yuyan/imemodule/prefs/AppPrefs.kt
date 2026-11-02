@@ -49,6 +49,9 @@ class AppPrefs(private val sharedPreferences: SharedPreferences) {
         val vibrationAmplitude = int("key_press_sound_volume", 1)     //触感强度：0 跟随系统，1 关闭，2-4 自定义；三溪默认关闭
 
         val privacyPolicySure = bool("privacy_policy_sure", false) //是否同意隐私政策
+
+        val bilingualMode = bool("bilingual_mode_enable", false) //双语学习模式，默认关闭
+        val bilingualTarget = string("bilingual_target_language", "en") //双语学习的目标语言，目前只有英语
     }
 
     inner class Input : ManagedPreferenceCategory(R.string.setting_ime_input, sharedPreferences) {

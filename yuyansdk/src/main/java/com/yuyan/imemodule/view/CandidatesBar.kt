@@ -41,6 +41,7 @@ import com.yuyan.imemodule.manager.layout.CustomLinearLayoutManager
 import com.yuyan.imemodule.utils.DevicesUtils
 import com.yuyan.imemodule.voice.VoiceInputManager
 import com.yuyan.imemodule.voice.VoicePermissionActivity
+import com.yuyan.inputmethod.Bilingual
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -107,6 +108,7 @@ class CandidatesBar(context: Context?, attrs: AttributeSet?) : RelativeLayout(co
             mCandidatesAdapter.setOnItemClickLitener { _: RecyclerView.Adapter<*>?, _: View?, position: Int ->
                 mCvListener.onClickChoice(position)
             }
+            mCandidatesAdapter.onItemLongClick = { position -> showBilingualCard(position) }
             mRVCandidates.setAdapter(mCandidatesAdapter)
             mRVCandidates.addOnScrollListener(object : OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -365,9 +367,20 @@ class CandidatesBar(context: Context?, attrs: AttributeSet?) : RelativeLayout(co
     }
 
     /**
+     * 双语学习模式：长按候选弹出详情卡片，盖住键盘
+     */
+    private fun showBilingualCard(position: Int) {
+        if (position < 0 || position >= DictDecoder.candidateSize) return
+        val entry = Bilingual.lookup(DictDecoder.candidates[position].text) ?: return
+        DevicesUtils.tryVibrate(this)
+        BilingualCard.show(this, entry, instance.skbHeight)
+    }
+
+    /**
      * 显示候选词
      */
     fun showCandidates() {
+        BilingualCard.dismiss() // 继续打字时关掉详情卡片
         mComposingView.text = DictDecoder.composingStrForDisplay
         val container = KeyboardManager.instance.currentContainer
         setMenuSettingLevel(if(container is InputBaseContainer) 0 else 1)

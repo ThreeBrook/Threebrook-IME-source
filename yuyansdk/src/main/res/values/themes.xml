@@ -26,6 +26,7 @@
         <!-- 没指定样式的按钮都是描边按钮；主要动作、危险动作在代码或布局里单独指定 -->
         <item name="android:buttonStyle">@style/Widget.Threebrook.Button</item>
         <item name="buttonStyle">@style/Widget.Threebrook.Button</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.Threebrook</item>
         <item name="alertDialogTheme">@style/ThemeOverlay.Threebrook.Dialog</item>
         <item name="android:alertDialogTheme">@style/ThemeOverlay.Threebrook.Dialog</item>
     </style>
@@ -91,6 +92,27 @@
         <item name="android:textColor">@color/tb_btn_text_text</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <!-- 标题字体（三溪外观规范第 3 节）：站酷小薇，页面标题 24、区块标题 18，字间距稍放宽 -->
+    <style name="TextAppearance.Threebrook.PageTitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:fontFamily">@font/zcool_xiaowei</item>
+        <item name="fontFamily">@font/zcool_xiaowei</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/tb_text</item>
+        <item name="android:letterSpacing">0.02</item>
+    </style>
+
+    <style name="TextAppearance.Threebrook.SectionTitle" parent="@style/TextAppearance.AppCompat.Body2">
+        <item name="android:fontFamily">@font/zcool_xiaowei</item>
+        <item name="fontFamily">@font/zcool_xiaowei</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/tb_accent</item>
+        <item name="android:letterSpacing">0.02</item>
+    </style>
+
+    <style name="PreferenceThemeOverlay.Threebrook" parent="PreferenceThemeOverlay">
+        <item name="preferenceCategoryTitleTextAppearance">@style/TextAppearance.Threebrook.SectionTitle</item>
     </style>
 
     <style name="Theme.CropActivityTheme" parent="Theme.AppCompat.DayNight">

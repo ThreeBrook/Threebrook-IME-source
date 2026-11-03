@@ -284,6 +284,14 @@
     <string name="about_os_sensevoice_summary">语音识别模型（在设置里下载或导入，不随安装包分发）· FunASR 模型许可</string>
     <string name="about_os_words">FrequencyWords 英文词频表</string>
     <string name="about_os_words_summary">英文纠错词表 · Hermit Dave · 来自 OpenSubtitles 2018 · CC BY-SA 4.0</string>
+    <string name="about_os_cedict">CC-CEDICT 汉英词典</string>
+    <string name="about_os_cedict_summary">双语学习的英文释义 · MDBG · CC BY-SA 4.0</string>
+    <string name="about_os_ecdict">ECDICT 英汉词典</string>
+    <string name="about_os_ecdict_summary">双语学习的中文释义 · skywind3000 · MIT</string>
+    <string name="about_os_zcool">站酷小薇字体</string>
+    <string name="about_os_zcool_summary">设置页面的标题字体 · SIL OFL 1.1</string>
+    <string name="about_os_material_symbols">Material Symbols 图标</string>
+    <string name="about_os_material_symbols_summary">设置首页的图标 · Google · Apache-2.0</string>
     <string name="about_copyright">© 2026 三溪 Threebrook</string>
 
     <!-- 我的词库 -->

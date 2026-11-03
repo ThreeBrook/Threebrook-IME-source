@@ -96,6 +96,10 @@ class AboutFragment : PreferenceFragmentCompat() {
                 addPreference(R.string.about_os_sherpa, R.string.about_os_sherpa_summary) { openUri("https://github.com/k2-fsa/sherpa-onnx") }
                 addPreference(R.string.about_os_sensevoice, R.string.about_os_sensevoice_summary) { openUri("https://github.com/FunAudioLLM/SenseVoice") }
                 addPreference(R.string.about_os_words, R.string.about_os_words_summary) { openUri("https://github.com/hermitdave/FrequencyWords") }
+                addPreference(R.string.about_os_cedict, R.string.about_os_cedict_summary) { openUri("https://www.mdbg.net/chinese/dictionary?page=cc-cedict") }
+                addPreference(R.string.about_os_ecdict, R.string.about_os_ecdict_summary) { openUri("https://github.com/skywind3000/ECDICT") }
+                addPreference(R.string.about_os_zcool, R.string.about_os_zcool_summary) { openUri("https://github.com/googlefonts/zcool-xiaowei") }
+                addPreference(R.string.about_os_material_symbols, R.string.about_os_material_symbols_summary) { openUri("https://github.com/google/material-design-icons") }
             }
             addCategory(R.string.app_version) {
                 isIconSpaceReserved = false

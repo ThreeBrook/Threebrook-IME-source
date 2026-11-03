@@ -15,7 +15,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="@string/setting_ime_sdk" />
+        app:title="@string/setting_ime_sdk"
+        app:titleTextAppearance="@style/TextAppearance.Threebrook.PageTitle" />
 
     <!-- 标题栏和页面同色，用一条细线分开（三溪规范：描边细、阴影轻） -->
     <View

@@ -108,7 +108,7 @@ class CustomThemeActivity : AppCompatActivity() {
     private val toolbar by lazy {
         view(::Toolbar) {
             backgroundColor = styledColor(android.R.attr.colorPrimary)
-            elevation = dp(4f)
+            setTitleTextAppearance(context, R.style.TextAppearance_Threebrook_PageTitle)
         }
     }
 

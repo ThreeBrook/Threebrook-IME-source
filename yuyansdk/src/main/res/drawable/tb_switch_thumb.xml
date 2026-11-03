@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 开关圆点：画在轨道里面；打开 onAccent 大一点，关闭 offline 小一点（三溪外观规范第 5 节） -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true">
+        <layer-list>
+            <item android:width="26dp" android:height="26dp">
+                <shape android:shape="oval"><solid android:color="@android:color/transparent" /></shape>
+            </item>
+            <item android:bottom="4dp" android:left="4dp" android:right="4dp" android:top="4dp">
+                <shape android:shape="oval"><solid android:color="@color/tb_on_accent" /></shape>
+            </item>
+        </layer-list>
+    </item>
+    <item>
+        <layer-list>
+            <item android:width="26dp" android:height="26dp">
+                <shape android:shape="oval"><solid android:color="@android:color/transparent" /></shape>
+            </item>
+            <item android:bottom="6dp" android:left="6dp" android:right="6dp" android:top="6dp">
+                <shape android:shape="oval"><solid android:color="@color/tb_offline" /></shape>
+            </item>
+        </layer-list>
+    </item>
+</selector>

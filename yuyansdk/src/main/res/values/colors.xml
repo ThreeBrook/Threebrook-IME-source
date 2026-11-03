@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- 三溪外观规范 2.1/2.2 界面色（浅色），设置界面统一从这里取色，不在页面里写死色值 -->
+    <color name="tb_bg">#F6FAF6</color>
+    <color name="tb_sidebar">#EAF3EC</color>
+    <color name="tb_card">#FFFFFF</color>
+    <color name="tb_border">#D6E4DB</color>
+    <color name="tb_border_strong">#C5D7CC</color>
+    <color name="tb_text">#1D3331</color>
+    <color name="tb_text_sub">#4E6461</color>
+    <color name="tb_text_muted">#627874</color>
+    <color name="tb_accent">#1C8780</color>
+    <color name="tb_on_accent">#FFFFFF</color>
+    <color name="tb_accent_soft">#E0F2EE</color>
+    <color name="tb_track">#E3EEE7</color>
+    <color name="tb_offline">#B3C2BC</color>
+    <color name="tb_danger">#B0334C</color>
+    <color name="tb_danger_bg">#FDEFF2</color>
+    <color name="tb_danger_border">#F2B8C4</color>
+
     <color name="skb_elevation_color">#bfbfbf</color>
     <color name="red_400">#EF5350</color>
     <color name="color_gray">#B4B4B4</color>

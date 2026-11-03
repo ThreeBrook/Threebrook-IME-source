@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 分隔线：1 像素 border 色（三溪外观规范第 4 节） -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/tb_border" />
+    <size android:height="1px" />
+</shape>

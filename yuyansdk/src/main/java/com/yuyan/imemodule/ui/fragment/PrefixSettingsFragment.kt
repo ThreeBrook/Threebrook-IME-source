@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -18,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yuyan.imemodule.R
 import com.yuyan.imemodule.adapter.PrefixSettingsAdapter
 import com.yuyan.imemodule.application.Launcher
-import com.yuyan.imemodule.data.theme.ThemeManager.activeTheme
 import com.yuyan.imemodule.database.DataBaseKT
 import com.yuyan.imemodule.database.entry.SideSymbol
 import com.yuyan.imemodule.utils.DevicesUtils
@@ -78,7 +78,7 @@ class PrefixSettingsFragment(type:String) : Fragment(){
                 gravity = Gravity.CENTER
                 background = null
                 text = context.getString(R.string.skb_prefix_show_tips)
-                setTextColor(activeTheme.keyTextColor)
+                setTextColor(ContextCompat.getColor(this@with, R.color.tb_text_sub)) // 设置页面的字，用界面色而不是键盘主题色
             }, lParams(width = 0, weight = 1f){
                 setMargins(dp(20), 0, dp(20), 0)
             })
@@ -87,14 +87,14 @@ class PrefixSettingsFragment(type:String) : Fragment(){
                 gravity = Gravity.CENTER
                 background = null
                 text = context.getString(R.string.skb_prefix_commit_tips)
-                setTextColor(activeTheme.keyTextColor)
+                setTextColor(ContextCompat.getColor(this@with, R.color.tb_text_sub))
             }, lParams(width = 0, weight = 2f))
 
             add(textView {
                 gravity = Gravity.CENTER
                 background = null
                 text = context.getString(R.string.skb_prefix_sort_tips)
-                setTextColor(activeTheme.keyTextColor)
+                setTextColor(ContextCompat.getColor(this@with, R.color.tb_text_sub))
             }, lParams(width = 0, weight = 1f))
         }
 

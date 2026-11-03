@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 浅色界面用深色状态栏图标 -->
+    <bool name="tb_light_bars">true</bool>
+</resources>

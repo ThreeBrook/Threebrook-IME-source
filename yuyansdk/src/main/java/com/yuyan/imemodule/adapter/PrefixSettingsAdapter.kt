@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.yuyan.imemodule.R
 import com.yuyan.imemodule.application.Launcher
-import com.yuyan.imemodule.data.theme.ThemeManager.activeTheme
 import com.yuyan.imemodule.database.entry.SideSymbol
 import splitties.dimensions.dp
 import splitties.views.dsl.core.add
@@ -25,24 +25,25 @@ class PrefixSettingsAdapter ( private val mDatas: MutableList<SideSymbol>, type:
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PrefixSettingsHolder {
+        val textColor = ContextCompat.getColor(parent.context, R.color.tb_text) // 设置页面的字，用界面色而不是键盘主题色
         val content = LinearLayout(Launcher.instance.context).apply {
             setPadding(0, dp(5), 0, dp(5))
             add(editText {
                 gravity = Gravity.CENTER
-                setTextColor(activeTheme.keyTextColor)
+                setTextColor(textColor)
                 id = R.id.et_prefix_setting_key
             }, lParams(width = 0, weight = 1f, height = matchParent){
                 setMargins(dp(20), 0, dp(20), 0)
             })
             add(editText {
                 gravity = Gravity.CENTER
-                setTextColor(activeTheme.keyTextColor)
+                setTextColor(textColor)
                 id = R.id.et_prefix_setting_value
             }, lParams(width = 0, weight = 2f))
 
             add(ImageView(context).apply {
                 setImageResource(R.drawable.ic_menu_menu)
-                drawable.setTint(activeTheme.keyTextColor)
+                drawable.setTint(textColor)
             }, lParams(width = 0, weight = 1f, gravity = Gravity.CENTER))
         }
         return PrefixSettingsHolder(content)

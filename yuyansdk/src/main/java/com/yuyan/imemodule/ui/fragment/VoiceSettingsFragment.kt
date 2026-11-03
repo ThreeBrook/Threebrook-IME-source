@@ -1,8 +1,10 @@
 package com.yuyan.imemodule.ui.fragment
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
+import android.provider.Settings
 import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
 import android.view.LayoutInflater
@@ -15,8 +17,11 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.yuyan.imemodule.R
+import com.yuyan.imemodule.voice.ModelDownloader
 import com.yuyan.imemodule.voice.VoiceInputManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,11 +30,12 @@ import splitties.dimensions.dp
 import java.io.File
 
 /**
- * 语音识别设置：查看模型状态，从手机文件导入模型（不需要数据线，也不需要网络权限），删除模型
+ * 语音识别设置：查看模型状态，一键下载模型（下载前说明要联网），或从手机文件导入模型，删除模型
  */
 class VoiceSettingsFragment : Fragment() {
 
     private lateinit var status: TextView
+    private lateinit var downloadButton: Button
     private lateinit var importButton: Button
     private lateinit var deleteButton: Button
 
@@ -40,6 +46,9 @@ class VoiceSettingsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val context = requireContext()
         status = TextView(context).apply { textSize = 16f }
+        downloadButton = Button(context).apply {
+            setOnClickListener { if (ModelDownloader.isRunning) ModelDownloader.cancel() else confirmDownload() }
+        }
         importButton = Button(context).apply {
             setText(R.string.voice_model_import)
             setOnClickListener { picker.launch(arrayOf("*/*")) }
@@ -50,7 +59,7 @@ class VoiceSettingsFragment : Fragment() {
         }
         val help = TextView(context).apply {
             text = getString(R.string.voice_model_help, VoiceInputManager.MODEL_FILE, VoiceInputManager.TOKENS_FILE,
-                MODEL_URL, TOKENS_URL)
+                MODEL_URL, TOKENS_URL, ModelDownloader.HOST)
             setTextIsSelectable(true)
             Linkify.addLinks(this, Linkify.WEB_URLS)
             movementMethod = LinkMovementMethod.getInstance()
@@ -60,11 +69,91 @@ class VoiceSettingsFragment : Fragment() {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(16), dp(16), dp(16), dp(16))
             addView(status)
+            addView(downloadButton)
             addView(importButton)
             addView(deleteButton)
             addView(help)
         }
         return ScrollView(context).apply { addView(content) }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                ModelDownloader.state.collect { render(it) }
+            }
+        }
+    }
+
+    private fun render(state: ModelDownloader.State) {
+        val running = state is ModelDownloader.State.Running || state is ModelDownloader.State.Verifying
+        downloadButton.setText(if (running) R.string.voice_model_download_cancel else R.string.voice_model_download)
+        importButton.isEnabled = !running
+        when (state) {
+            is ModelDownloader.State.Running -> {
+                status.text = getString(R.string.voice_model_downloading, state.downloaded * 100 / state.total,
+                    state.downloaded / 1024 / 1024, state.total / 1024 / 1024)
+                deleteButton.isEnabled = false
+            }
+            is ModelDownloader.State.Verifying -> {
+                status.setText(R.string.voice_model_verifying)
+                deleteButton.isEnabled = false
+            }
+            is ModelDownloader.State.Done -> {
+                ModelDownloader.acknowledge()
+                refresh()
+                showDownloaded()
+            }
+            is ModelDownloader.State.Failed -> {
+                ModelDownloader.acknowledge()
+                refresh()
+                showFailed(state.reason)
+            }
+            ModelDownloader.State.Idle -> refresh()
+        }
+    }
+
+    /**
+     * 下载前说清楚：要联网、下多大、连哪里、下完可以关掉联网
+     */
+    private fun confirmDownload() {
+        val context = requireContext()
+        var message = getString(R.string.voice_model_download_notice, ModelDownloader.TOTAL_BYTES / 1024 / 1024, ModelDownloader.HOST)
+        if (ModelDownloader.isMetered(context)) message = getString(R.string.voice_model_download_metered) + "\n\n" + message
+        AlertDialog.Builder(context)
+            .setTitle(R.string.voice_model_download_title)
+            .setMessage(message)
+            .setPositiveButton(R.string.voice_model_download_start) { _, _ -> ModelDownloader.start(context) }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun showDownloaded() {
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.voice_model_downloaded_title)
+            .setMessage(R.string.voice_model_downloaded)
+            .setPositiveButton(android.R.string.ok, null)
+            .setNeutralButton(R.string.voice_model_open_app_settings) { _, _ -> openAppSettings() }
+            .show()
+    }
+
+    private fun showFailed(reason: ModelDownloader.Reason) {
+        val message = when (reason) {
+            ModelDownloader.Reason.NETWORK -> R.string.voice_model_download_failed_network
+            ModelDownloader.Reason.VERIFY -> R.string.voice_model_download_failed_verify
+            ModelDownloader.Reason.STORAGE -> R.string.voice_model_download_failed_storage
+        }
+        AlertDialog.Builder(requireContext())
+            .setMessage(message)
+            .setPositiveButton(R.string.voice_model_download_retry) { _, _ -> ModelDownloader.start(requireContext()) }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    /** 打开系统里本应用的详情页，部分手机可以在这里关掉联网（流量管理/联网控制） */
+    private fun openAppSettings() {
+        val context = requireContext()
+        startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", context.packageName, null)))
     }
 
     override fun onResume() {
@@ -73,6 +162,7 @@ class VoiceSettingsFragment : Fragment() {
     }
 
     private fun refresh() {
+        if (ModelDownloader.isRunning) return // 下载进度由 render 显示
         val context = requireContext()
         val dir = VoiceInputManager.modelDir(context)
         val model = File(dir, VoiceInputManager.MODEL_FILE)
@@ -84,6 +174,7 @@ class VoiceSettingsFragment : Fragment() {
             else -> getString(R.string.voice_model_not_installed)
         }
         deleteButton.isEnabled = model.exists() || tokens.exists()
+        downloadButton.isEnabled = !VoiceInputManager.isModelReady(context)
     }
 
     private fun importFiles(uris: List<Uri>) {
@@ -180,7 +271,7 @@ class VoiceSettingsFragment : Fragment() {
 
     companion object {
         private const val MIN_MODEL_BYTES = 50L shl 20 // 小于50MB的.onnx不是完整的SenseVoice模型
-        // 三溪自己的下载地址，与已测试的 SenseVoice int8 2024-07-17 模型一致；地址不带 App 版本号，换版本不用改
+        // 手动下载用的地址，和自动下载是同一份文件（见 ModelDownloader）
         private const val MODEL_URL = "https://dl.threebrook.com/ime/models/sensevoice-2024-07-17/model.int8.onnx"
         private const val TOKENS_URL = "https://dl.threebrook.com/ime/models/sensevoice-2024-07-17/tokens.txt"
     }

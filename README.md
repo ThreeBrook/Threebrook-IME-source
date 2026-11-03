@@ -10,7 +10,7 @@
 
 <img src="https://img.shields.io/badge/平台-Android_6%2B-2F7FC1?style=for-the-badge&logo=android&logoColor=white" alt="Android">
 <img src="https://img.shields.io/badge/价格-免费-2F7FC1?style=for-the-badge" alt="免费">
-<img src="https://img.shields.io/badge/网络权限-没有申请-1C8780?style=for-the-badge" alt="没有申请网络权限">
+<img src="https://img.shields.io/badge/联网-只下载语音模型-1C8780?style=for-the-badge" alt="只在下载语音模型时联网">
 
 <img src="https://img.shields.io/badge/Kotlin-Android-7F52FF?logo=kotlin&logoColor=white" alt="Kotlin">
 <img src="https://img.shields.io/badge/Rime-输入引擎-2F7FC1" alt="Rime">
@@ -70,7 +70,7 @@
 <tr><td>iOS</td><td>✖ 暂不做</td></tr>
 </table>
 
-**价格**：免费。**权限**：只申请振动和麦克风（按住说话时才用），没有申请网络权限。
+**价格**：免费。**权限**：振动、麦克风（按住说话时才用）、网络（只在你点“下载语音模型”并确认后下载模型，不上传任何内容；下完可以在手机设置里关掉联网）。
 
 ## 架构
 
@@ -202,7 +202,7 @@ flowchart LR
 
 > [!WARNING]
 > 改代码前必须遵守：
-> 1. **不申请网络权限**：不联网、没有统计、没有云同步；学到的词和设置只在手机里。
+> 1. **只在下载语音模型时联网**：网络只给 `voice/ModelDownloader.kt` 用（用户确认后从 dl.threebrook.com 下载，只下不传）；别处不联网、没有统计、没有云同步；学到的词和设置只在手机里。
 > 2. **密码框不学习**：`PrivateInput.active` 时不记录学习、不进剪贴板记录。
 > 3. **包名不改**：`com.yuyan.pinyin.offline.release`，改了等于新 App，已装用户收不到更新、学习记录也带不过去。
 > 4. **签名文件不进仓库**，换签名同样会让已装用户无法覆盖安装。

@@ -91,7 +91,7 @@ class FullDisplayKeyboardFragment: Fragment(){
         }
         if(!fullDisplayKeyboardEnable)items.visibility = View.GONE
         val elevation = textView {
-            setBackgroundResource(R.color.skb_elevation_color)
+            setBackgroundResource(R.color.tb_border)
         }
         verticalLayout {
             add(header, lParams(width = matchParent, height = wrapContent) {

@@ -104,12 +104,11 @@ class OtherSettingsFragment: ManagedPreferenceFragment(AppPrefs.getInstance().ot
         screen.addPreference(R.string.export_user_data) {
             lifecycleScope.launch {
                 exportTimestamp = System.currentTimeMillis()
-                exportLauncher.launch("yuyanIme_${TimeUtils.iso8601UTCDateTime(exportTimestamp)}.zip")
+                exportLauncher.launch("threebrookIme_${TimeUtils.iso8601UTCDateTime(exportTimestamp)}.zip")
             }
         }
         screen.addPreference(R.string.import_user_data) {
             AlertDialog.Builder(ctx)
-                .setIconAttribute(android.R.attr.alertDialogIcon)
                 .setTitle(R.string.import_user_data)
                 .setMessage(R.string.confirm_import_user_data)
                 .setPositiveButton(android.R.string.ok) { _, _ ->

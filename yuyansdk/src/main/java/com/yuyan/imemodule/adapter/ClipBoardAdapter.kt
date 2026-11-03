@@ -77,6 +77,7 @@ class ClipBoardAdapter(context: Context, datas: MutableList<Clipboard>) :
         val viewIvYopTips = ImageView(mContext).apply {
             id = R.id.clipboard_adapter_top_tips
             setImageResource(R.drawable.ic_baseline_top_tips_32)
+            setColorFilter(activeTheme.accentKeyBackgroundColor) // 置顶标记跟随键盘主题的强调色
             layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT).apply {
                 addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
                 addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE)

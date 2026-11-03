@@ -1,6 +1,7 @@
 package com.yuyan.imemodule.adapter
 
 import android.content.Context
+import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -73,7 +74,10 @@ class SymbolAdapter(context: Context?, val viewType: SymbolMode, private val pag
                val paddingStart =  view.dp(5)
                val paddingTop =  view.dp(10)
                 textView.setPadding(paddingStart, paddingTop, paddingStart, paddingTop)
-                view.setBackgroundResource(R.drawable.shape_emojicon_background)
+                view.background = GradientDrawable().apply { // 框线跟随键盘主题的强调色
+                    cornerRadius = view.dp(6).toFloat()
+                    setStroke(view.dp(2), activeTheme.accentKeyBackgroundColor)
+                }
             }
 
         }

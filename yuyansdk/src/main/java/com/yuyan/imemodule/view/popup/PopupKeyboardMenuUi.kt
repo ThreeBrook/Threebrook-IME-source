@@ -55,7 +55,7 @@ class PopupKeyboardMenuUi(bounds: Rect, onDismissSelf: PopupContainerUi.() -> Un
 
     private val focusBackgroundClear = GradientDrawable().apply {
         cornerRadius = radius
-        setColor(ctx.getColor(R.color.red_400))
+        setColor(if (ThemeManager.activeTheme.isDark) DANGER_DARK else DANGER_LIGHT) // 三溪外观规范的 danger，跟随键盘深浅色
     }
 
     private val rowCount: Int
@@ -119,8 +119,13 @@ class PopupKeyboardMenuUi(bounds: Rect, onDismissSelf: PopupContainerUi.() -> Un
 
     private fun markFocus(index: Int) {
         keyUis.getOrNull(index)?.apply {
-            root.background =  if(popupMenuPair.first == PopupMenuMode.Clear)focusBackgroundClear else focusBackground
-            textView.setTextColor(ThemeManager.activeTheme.keyTextColor)
+            val clear = popupMenuPair.first == PopupMenuMode.Clear
+            root.background = if (clear) focusBackgroundClear else focusBackground
+            textView.setTextColor(when {
+                !clear -> ThemeManager.activeTheme.accentKeyTextColor
+                ThemeManager.activeTheme.isDark -> ON_DANGER_DARK
+                else -> ON_DANGER_LIGHT
+            })
         }
     }
 
@@ -141,5 +146,13 @@ class PopupKeyboardMenuUi(bounds: Rect, onDismissSelf: PopupContainerUi.() -> Un
 
     override fun onTrigger(): Pair<PopupMenuMode, String> {
         return if(isSelect)popupMenuPair else Pair(PopupMenuMode.None, "")
+    }
+
+    companion object {
+        // 三溪外观规范的 danger 和危险色上的字，浅色 / 深色键盘各一套
+        private const val DANGER_LIGHT = 0xffB0334C.toInt()
+        private const val DANGER_DARK = 0xffF27F95.toInt()
+        private const val ON_DANGER_LIGHT = 0xffFFFFFF.toInt()
+        private const val ON_DANGER_DARK = 0xff3A1D25.toInt()
     }
 }

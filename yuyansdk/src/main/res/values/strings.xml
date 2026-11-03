@@ -62,7 +62,7 @@
     <string name="clipboard_clear">清空剪贴板</string>
     <string name="clipboard_empty_ltip">无任何内容</string>
     <string name="about">关于</string>
-    <string name="feedback">吐槽与反馈</string>
+    <string name="feedback">意见反馈</string>
     <string name="app_version">应用版本</string>
     <string name="sdk_version">SDK版本</string>
     <string name="version">版本</string>

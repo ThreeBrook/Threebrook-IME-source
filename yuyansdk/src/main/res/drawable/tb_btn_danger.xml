@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 危险按钮：删除、清空这类不能撤回的动作 -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="?android:attr/colorControlHighlight">
+    <item>
+        <selector>
+            <item android:state_enabled="false">
+                <shape android:shape="rectangle">
+                    <corners android:radius="6dp" />
+                    <solid android:color="@color/tb_bg" />
+                    <stroke android:width="1dp" android:color="@color/tb_border" />
+                </shape>
+            </item>
+            <item>
+                <shape android:shape="rectangle">
+                    <corners android:radius="6dp" />
+                    <solid android:color="@color/tb_danger_bg" />
+                    <stroke android:width="1dp" android:color="@color/tb_danger_border" />
+                </shape>
+            </item>
+        </selector>
+    </item>
+</ripple>

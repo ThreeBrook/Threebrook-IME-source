@@ -1,13 +1,15 @@
 package com.yuyan.imemodule.view
 
+import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.RippleDrawable
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.ScrollView
@@ -25,6 +27,27 @@ import java.util.Locale
  */
 object BilingualCard {
     private var popup: PopupWindow? = null
+
+    /**
+     * 卡片上的按钮跟键盘主题走（三溪外观规范第 5 节）：主要动作用强调色实心、圆角 10，其余描边、圆角 6
+     */
+    private fun cardButton(context: Context, primary: Boolean) = TextView(context).apply {
+        gravity = Gravity.CENTER
+        textSize = 14f
+        minHeight = dp(36)
+        setPadding(dp(14), 0, dp(14), 0)
+        isClickable = true
+        setTextColor(if (primary) activeTheme.accentKeyTextColor else activeTheme.keyTextColor)
+        val shape = GradientDrawable().apply {
+            cornerRadius = dp(if (primary) 10 else 6).toFloat()
+            setColor(if (primary) activeTheme.accentKeyBackgroundColor else activeTheme.keyBackgroundColor)
+            if (!primary) setStroke(dp(1), activeTheme.keyStrokeColor)
+        }
+        background = RippleDrawable(ColorStateList.valueOf(activeTheme.keyPressHighlightColor), shape, null)
+    }
+
+    private fun buttonParams(context: Context) =
+        LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { marginStart = context.dp(8) }
 
     fun dismiss() {
         popup?.dismiss()
@@ -56,7 +79,7 @@ object BilingualCard {
             maxLines = 1
             ellipsize = TextUtils.TruncateAt.END
         }
-        val speak = Button(context).apply {
+        val speak = cardButton(context, primary = false).apply {
             setText(R.string.bilingual_speak)
             setOnClickListener { Speaker.speak(context, entry.word, headLocale) }
         }
@@ -64,7 +87,7 @@ object BilingualCard {
             gravity = Gravity.CENTER_VERTICAL
             addView(title)
             addView(reading, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-            addView(speak)
+            addView(speak, buttonParams(context))
         }
 
         val meanings = LinearLayout(context).apply { orientation = LinearLayout.VERTICAL }
@@ -88,25 +111,27 @@ object BilingualCard {
         }
         val scroll = ScrollView(context).apply { addView(meanings) }
 
-        val add = Button(context)
+        val add = cardButton(context, primary = true)
         fun updateAdd() {
             val saved = Vocabulary.contains(entry.word)
             add.setText(if (saved) R.string.bilingual_in_vocabulary else R.string.bilingual_add_vocabulary)
             add.isEnabled = !saved
+            add.alpha = if (saved) 0.5f else 1f
         }
         updateAdd()
         add.setOnClickListener {
             Vocabulary.add(entry)
             updateAdd()
         }
-        val close = Button(context).apply {
+        val close = cardButton(context, primary = false).apply {
             setText(R.string.bilingual_close)
             setOnClickListener { dismiss() }
         }
         val footer = LinearLayout(context).apply {
             gravity = Gravity.END
-            addView(add)
-            addView(close)
+            setPadding(0, dp(8), 0, dp(4))
+            addView(add, buttonParams(context))
+            addView(close, buttonParams(context))
         }
 
         val root = LinearLayout(context).apply {
@@ -114,8 +139,8 @@ object BilingualCard {
             setPadding(dp(16), dp(10), dp(16), dp(6))
             background = GradientDrawable().apply {
                 setColor(activeTheme.keyboardColor or 0xFF000000.toInt())
-                cornerRadius = dp(8).toFloat()
-                setStroke(dp(1), (textColor and 0x00FFFFFF) or 0x33000000)
+                cornerRadius = dp(14).toFloat()
+                setStroke(dp(1), activeTheme.keyStrokeColor)
             }
             addView(header)
             addView(scroll, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))

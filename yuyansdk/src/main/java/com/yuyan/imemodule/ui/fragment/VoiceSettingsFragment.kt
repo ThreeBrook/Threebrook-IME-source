@@ -21,6 +21,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.yuyan.imemodule.R
+import com.yuyan.imemodule.utils.dangerButton
+import com.yuyan.imemodule.utils.primaryButton
+import com.yuyan.imemodule.utils.showDanger
 import com.yuyan.imemodule.voice.ModelDownloader
 import com.yuyan.imemodule.voice.VoiceInputManager
 import kotlinx.coroutines.Dispatchers
@@ -46,14 +49,14 @@ class VoiceSettingsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val context = requireContext()
         status = TextView(context).apply { textSize = 16f }
-        downloadButton = Button(context).apply {
+        downloadButton = context.primaryButton().apply {
             setOnClickListener { if (ModelDownloader.isRunning) ModelDownloader.cancel() else confirmDownload() }
         }
         importButton = Button(context).apply {
             setText(R.string.voice_model_import)
             setOnClickListener { picker.launch(arrayOf("*/*")) }
         }
-        deleteButton = Button(context).apply {
+        deleteButton = context.dangerButton().apply {
             setText(R.string.voice_model_delete)
             setOnClickListener { confirmDelete() }
         }
@@ -69,9 +72,9 @@ class VoiceSettingsFragment : Fragment() {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(16), dp(16), dp(16), dp(16))
             addView(status)
-            addView(downloadButton)
-            addView(importButton)
-            addView(deleteButton)
+            for (button in listOf(downloadButton, importButton, deleteButton)) {
+                addView(button, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(10) })
+            }
             addView(help)
         }
         return ScrollView(context).apply { addView(content) }
@@ -266,7 +269,7 @@ class VoiceSettingsFragment : Fragment() {
                 }
             }
             .setNegativeButton(android.R.string.cancel, null)
-            .show()
+            .showDanger()
     }
 
     companion object {

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 弹窗底：卡片色，大圆角 28（三溪外观规范第 4 节），四周留出和屏幕边的距离 -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:insetLeft="16dp" android:insetTop="16dp" android:insetRight="16dp" android:insetBottom="16dp">
+    <shape android:shape="rectangle">
+        <corners android:radius="28dp" />
+        <solid android:color="@color/tb_card" />
+    </shape>
+</inset>

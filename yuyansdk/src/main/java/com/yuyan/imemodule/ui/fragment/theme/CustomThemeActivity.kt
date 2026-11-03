@@ -3,7 +3,7 @@ package com.yuyan.imemodule.ui.fragment.theme
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -44,6 +44,7 @@ import com.yuyan.imemodule.data.theme.ThemePreset
 import com.yuyan.imemodule.singleton.EnvironmentSingleton
 import com.yuyan.imemodule.utils.DarkenColorFilter
 import com.yuyan.imemodule.keyboard.KeyboardPreviewView
+import com.yuyan.imemodule.utils.showDanger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.parcelize.Parcelize
@@ -482,7 +483,7 @@ class CustomThemeActivity : AppCompatActivity() {
                 delete()
             }
             .setNegativeButton(android.R.string.cancel, null)
-            .show()
+            .showDanger()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

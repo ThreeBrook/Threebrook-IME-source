@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yuyan.imemodule.R
 import com.yuyan.imemodule.prefs.AppPrefs
 import com.yuyan.imemodule.utils.Speaker
+import com.yuyan.imemodule.utils.primaryButton
+import com.yuyan.imemodule.utils.showDanger
 import com.yuyan.inputmethod.Bilingual
 import com.yuyan.inputmethod.Vocabulary
 import splitties.dimensions.dp
@@ -61,7 +63,7 @@ class BilingualFragment : Fragment() {
         summary = TextView(context).apply {
             layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
         }
-        reviewButton = Button(context).apply {
+        reviewButton = context.primaryButton().apply {
             setOnClickListener { startReview() }
         }
         val header = LinearLayout(context).apply {
@@ -158,7 +160,7 @@ class BilingualFragment : Fragment() {
                 refresh()
             }
             .setNegativeButton(android.R.string.cancel, null)
-            .show()
+            .showDanger()
     }
 
     private inner class WordsAdapter : RecyclerView.Adapter<WordsAdapter.Holder>() {

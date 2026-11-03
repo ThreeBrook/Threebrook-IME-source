@@ -23,6 +23,11 @@
         <item name="android:windowLightNavigationBar" tools:targetApi="27">@bool/tb_light_bars</item>
         <item name="android:switchStyle">@style/Widget.Threebrook.Switch</item>
         <item name="switchStyle">@style/Widget.Threebrook.SwitchCompat</item>
+        <!-- 没指定样式的按钮都是描边按钮；主要动作、危险动作在代码或布局里单独指定 -->
+        <item name="android:buttonStyle">@style/Widget.Threebrook.Button</item>
+        <item name="buttonStyle">@style/Widget.Threebrook.Button</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.Threebrook.Dialog</item>
+        <item name="android:alertDialogTheme">@style/ThemeOverlay.Threebrook.Dialog</item>
     </style>
 
     <!-- 开关：圆点在轨道里，打开时轨道 accent、圆点 onAccent；关闭时轨道 track、圆点 offline -->
@@ -34,6 +39,58 @@
     <style name="Widget.Threebrook.SwitchCompat" parent="Widget.AppCompat.CompoundButton.Switch">
         <item name="android:thumb">@drawable/tb_switch_thumb</item>
         <item name="track">@drawable/tb_switch_track</item>
+    </style>
+
+    <!-- 按钮（三溪外观规范第 5 节）：描边按钮高 36、圆角 6；主按钮高 40、圆角 10；危险按钮同描边按钮，红字红底 -->
+    <style name="Widget.Threebrook.Button" parent="android:Widget.Material.Button">
+        <item name="android:background">@drawable/tb_btn_outline</item>
+        <item name="android:textColor">@color/tb_btn_outline_text</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:minHeight">36dp</item>
+        <item name="android:minWidth">64dp</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+    </style>
+
+    <style name="Widget.Threebrook.Button.Primary">
+        <item name="android:background">@drawable/tb_btn_primary</item>
+        <item name="android:textColor">@color/tb_btn_primary_text</item>
+        <item name="android:minHeight">40dp</item>
+        <item name="android:paddingStart">18dp</item>
+        <item name="android:paddingEnd">18dp</item>
+    </style>
+
+    <style name="Widget.Threebrook.Button.Danger">
+        <item name="android:background">@drawable/tb_btn_danger</item>
+        <item name="android:textColor">@color/tb_btn_danger_text</item>
+    </style>
+
+    <!-- 没有边框的文字按钮：引导页的上一步 / 下一步 -->
+    <style name="Widget.Threebrook.Button.Text">
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:textColor">@color/tb_btn_text_text</item>
+    </style>
+
+    <!-- 弹窗：卡片色底、圆角 28，底部按钮是溪青文字按钮 -->
+    <style name="ThemeOverlay.Threebrook.Dialog" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/tb_dialog_bg</item>
+        <item name="colorAccent">@color/tb_accent</item>
+        <item name="android:colorAccent">@color/tb_accent</item>
+        <item name="colorBackgroundFloating">@color/tb_card</item>
+        <item name="android:textColorPrimary">@color/tb_text</item>
+        <item name="android:textColorSecondary">@color/tb_text_sub</item>
+        <item name="buttonBarButtonStyle">@style/Widget.Threebrook.DialogButton</item>
+        <item name="android:buttonBarButtonStyle">@style/Widget.Threebrook.DialogButton</item>
+    </style>
+
+    <style name="Widget.Threebrook.DialogButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/tb_btn_text_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="Theme.CropActivityTheme" parent="Theme.AppCompat.DayNight">

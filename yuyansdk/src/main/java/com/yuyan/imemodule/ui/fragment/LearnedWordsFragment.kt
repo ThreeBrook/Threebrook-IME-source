@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yuyan.imemodule.R
+import com.yuyan.imemodule.utils.dangerButton
+import com.yuyan.imemodule.utils.showDanger
 import com.yuyan.inputmethod.UserLearning
 import splitties.dimensions.dp
 import java.text.SimpleDateFormat
@@ -33,7 +35,7 @@ class LearnedWordsFragment : Fragment() {
         summary = TextView(context).apply {
             layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
         }
-        val clearButton = Button(context).apply {
+        val clearButton = context.dangerButton().apply {
             setText(R.string.learned_words_clear)
             setOnClickListener { confirmClear() }
         }
@@ -73,7 +75,7 @@ class LearnedWordsFragment : Fragment() {
                 refresh()
             }
             .setNegativeButton(android.R.string.cancel, null)
-            .show()
+            .showDanger()
     }
 
     private fun confirmClear() {
@@ -85,7 +87,7 @@ class LearnedWordsFragment : Fragment() {
                 refresh()
             }
             .setNegativeButton(android.R.string.cancel, null)
-            .show()
+            .showDanger()
     }
 
     private inner class WordsAdapter : RecyclerView.Adapter<WordsAdapter.Holder>() {

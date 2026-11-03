@@ -94,8 +94,12 @@ object YuyanEmojiCompat {
 
     private class InstanceHandler(context: Context, replaceAll: Boolean = false) {
         private val initCallback: EmojiCompat.InitCallback = object : EmojiCompat.InitCallback() {
+            @SuppressLint("RestrictedApi")
             override fun onInitialized() {
                 super.onInitialized()
+                // 输入框的表情过滤器在加载完成的回调里会取当前默认实例，这里先把默认实例换成刚加载好的这个，
+                // 否则可能取到另一个还没加载完的实例而崩溃（Not initialized yet）。本回调先于输入框的回调执行
+                instance?.let { EmojiCompat.reset(it) }
                 publishedInstanceFlow.value = instance
             }
         }

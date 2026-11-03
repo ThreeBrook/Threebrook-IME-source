@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!-- 只用于在语音识别设置里下载语音模型（ModelDownloader），下载前会弹框说明 -->
@@ -56,6 +57,16 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/cropper_library_file_paths"/>
+        </provider>
+        <!-- 表情由 YuyanEmojiCompat 自己创建和加载；关掉 emoji2 默认的自动初始化，免得多一个还没加载完的实例被输入框拿去用（偶发 Not initialized yet 崩溃） -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+                tools:node="remove" />
         </provider>
     </application>
 
